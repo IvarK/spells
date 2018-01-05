@@ -21,6 +21,15 @@ var Creation = function Creation(name, cost, duration, power,
 	this.timesCast = 0;
 };
 
+var creationUpgrades = {
+  powerUpgPowerMult: 1.2,
+  powerUpgDurationMult: 0.9,
+  durationUpgDurationMult: 1.2,
+  durationUpgCostMult: 1.4,
+  costUpgCostMult: 0.7,
+  upgradesScaling: 1.2
+};
+
 
 game = {
 	coins: 0,
@@ -79,7 +88,34 @@ function getFPS() {
 	return game.spells.focusSpell.power;
 }
 
-//Power upg: Power +20%, Duration -10/20%, Cost +40%
+function upgradePower(spellName) {
+  spellToUp = game.spells[spellName];
+  if(game.coins < spellToUp.powerCost) return false;
+  game.coins -= spellToUp.powerCost;
+  spellToUp.power *= creationUpgrades.powerUpgPowerMult;
+  spellToUp.duration *= creationUpgrades.powerUpgDurationMult;
+  spellToUp.powerCost *= creationUpgrades.upgradesScaling;
+  updateUpgradeTooltips();
+}
+
+function upgradeDuration(spellName) {
+  spellToUp = game.spells[spellName];
+  if(game.coins < spellToUp.durationCost) return false;
+  game.coins -= spellToUp.durationCost;
+  spellToUp.duration *= creationUpgrades.durationUpgDurationMult;
+  spellToUp.cost *= creationUpgrades.durationUpgCostMult;
+  spellToUp.durationCost *= creationUpgrades.upgradesScaling;
+  updateUpgradeTooltips();
+}
+
+function upgradeCost(spellName) {
+  spellToUp = game.spells[spellName];
+  if(game.coins < spellToUp.costCost) return false;
+  game.coins -= spellToUp.costCost;
+  spellToUp.cost *= creationUpgrades.costUpgCostMult;
+  spellToUp.costCost *= creationUpgrades.upgradesScaling;
+  updateUpgradeTooltips();
+}
 
 
 function updateInfo() {
@@ -112,13 +148,15 @@ function updateDurations() {
 }
 
 
-document.getElementById("makeCoinsPowerUpg").setAttribute('ach-tooltip', "Increase Power, but decrease Duration and increase Cost for " + game.spells.coinSpell.powerCost + " mana");
-document.getElementById("makeCoinsDurationUpg").setAttribute('ach-tooltip', "Increase Duration, but also increase Cost for " + game.spells.coinSpell.durationCost + " mana");
-document.getElementById("makeCoinsCostUpg").setAttribute('ach-tooltip', "Decrease Cost for " + game.spells.coinSpell.costCost + " mana");
-document.getElementById("makeFocusPowerUpg").setAttribute('ach-tooltip', "Increase Power, but decrease Duration and increase Cost for " + game.spells.focusSpell.powerCost + " mana");
-document.getElementById("makeFocusDurationUpg").setAttribute('ach-tooltip', "Increase Duration, but also increase Cost for " + game.spells.focusSpell.durationCost + " mana");
-document.getElementById("makeFocusCostUpg").setAttribute('ach-tooltip', "Decrease Cost for " + game.spells.focusSpell.costCost + " mana");
-
+//Change to Power -> New power, Duration -> New duration, etc. with coloring in green for good and red for bad
+function updateUpgradeTooltips() {
+	document.getElementById("makeCoinsPowerUpg").setAttribute('ach-tooltip', "Increase Power, but decrease Duration and increase Cost for " + game.spells.coinSpell.powerCost.toFixed(0) + " coins");
+	document.getElementById("makeCoinsDurationUpg").setAttribute('ach-tooltip', "Increase Duration, but also increase Cost for " + game.spells.coinSpell.durationCost.toFixed(0) + " coins");
+	document.getElementById("makeCoinsCostUpg").setAttribute('ach-tooltip', "Decrease Cost for " + game.spells.coinSpell.costCost.toFixed(0) + " coins");
+	document.getElementById("makeFocusPowerUpg").setAttribute('ach-tooltip', "Increase Power, but decrease Duration and increase Cost for " + game.spells.focusSpell.powerCost.toFixed(0) + " coins");
+	document.getElementById("makeFocusDurationUpg").setAttribute('ach-tooltip', "Increase Duration, but also increase Cost for " + game.spells.focusSpell.durationCost.toFixed(0) + " coins");
+	document.getElementById("makeFocusCostUpg").setAttribute('ach-tooltip', "Decrease Cost for " + game.spells.focusSpell.costCost.toFixed(0) + " coins");
+}
 
 
 setInterval(function() {
@@ -149,3 +187,4 @@ setInterval(function() {
 
 
 updateSpells();
+updateUpgradeTooltips();
