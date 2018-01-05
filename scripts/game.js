@@ -138,8 +138,8 @@ function updateSpells() {
 	document.getElementById("makeCoinsCost").innerHTML = "Cost: " + game.spells.coinSpell.cost + " Mana";
   document.getElementById("makeFocusCost").innerHTML = "Cost: " + game.spells.focusSpell.cost + " Mana";
   
-  document.getElementById("makeCoinsDescription").innerHTML = "Creates " + getCPS() + " coins per second";
-  document.getElementById("makeFocusDescription").innerHTML = "Creates " + getFPS() + " focus per second";
+  document.getElementById("makeCoinsDescription").innerHTML = "Creates " + getCPS().toFixed(1) + " coins per second";
+  document.getElementById("makeFocusDescription").innerHTML = "Creates " + getFPS().toFixed(1) + " focus per second";
 }
 
 function updateCastButtons() {
