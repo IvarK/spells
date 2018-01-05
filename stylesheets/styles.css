@@ -46,12 +46,17 @@ body {
 }
 
 .spellUpg {
-  width: 25px;
-  height: 25px;
+  width: 30px;
+  height: 30px;
   border: 1px solid #2573e9;
-  background: #acc6ec
+  background: #acc6ec;
   border-radius: 2px;
-  font-size: 20px
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.spellUpg:hover {
+  background: #8494ac;
 }
 
 .castLocked {
@@ -130,6 +135,8 @@ body {
     font-size: 14px;
     line-height: 1.2;
     transition-duration: .5s;
+    white-space: pre;
+    
 }
 
 [ach-tooltip]:after {
