@@ -95,7 +95,7 @@ function upgradePower(spellName) {
   spellToUp.power *= creationUpgrades.powerUpgPowerMult;
   spellToUp.duration *= creationUpgrades.powerUpgDurationMult;
   spellToUp.powerCost *= creationUpgrades.upgradesScaling;
-  focuupdateTooltips;
+  updateTooltips;
   updateSpells()
 }
 
@@ -106,7 +106,7 @@ function upgradeDuration(spellName) {
   spellToUp.duration *= creationUpgrades.durationUpgDurationMult;
   spellToUp.cost *= creationUpgrades.durationUpgCostMult;
   spellToUp.durationCost *= creationUpgrades.upgradesScaling;
-  focuupdateTooltips;
+  updateTooltips;
   updateSpells()
 }
 
@@ -116,7 +116,7 @@ function upgradeCost(spellName) {
   game.coins -= spellToUp.costCost;
   spellToUp.cost *= creationUpgrades.costUpgCostMult;
   spellToUp.costCost *= creationUpgrades.upgradesScaling;
-  focuupdateTooltips;
+  updateTooltips;
   updateSpells()
 }
 
