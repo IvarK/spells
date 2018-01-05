@@ -130,6 +130,8 @@ body {
     font-size: 14px;
     line-height: 1.2;
     transition-duration: .5s;
+    white-space: pre;
+    
 }
 
 [ach-tooltip]:after {

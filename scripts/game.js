@@ -111,14 +111,14 @@ function updateDurations() {
 	document.getElementById("makeFocusDuration").innerHTML = (game.spells.focusSpell.durationLeft === 0) ? "Duration: " + game.spells.focusSpell.duration.toFixed(1) + " seconds." : "Duration: " + game.spells.focusSpell.durationLeft.toFixed(1) + " seconds.";
 }
 
-
-document.getElementById("makeCoinsPowerUpg").setAttribute('ach-tooltip', "Increase Power, but decrease Duration and increase Cost for " + game.spells.coinSpell.powerCost + " mana");
-document.getElementById("makeCoinsDurationUpg").setAttribute('ach-tooltip', "Increase Duration, but also increase Cost for " + game.spells.coinSpell.durationCost + " mana");
-document.getElementById("makeCoinsCostUpg").setAttribute('ach-tooltip', "Decrease Cost for " + game.spells.coinSpell.costCost + " mana");
-document.getElementById("makeFocusPowerUpg").setAttribute('ach-tooltip', "Increase Power, but decrease Duration and increase Cost for " + game.spells.focusSpell.powerCost + " mana");
-document.getElementById("makeFocusDurationUpg").setAttribute('ach-tooltip', "Increase Duration, but also increase Cost for " + game.spells.focusSpell.durationCost + " mana");
-document.getElementById("makeFocusCostUpg").setAttribute('ach-tooltip', "Decrease Cost for " + game.spells.focusSpell.costCost + " mana");
-
+function updateTooltips() {
+  document.getElementById("makeCoinsPowerUpg").setAttribute('ach-tooltip', "Power -> ass\nDuration -> ass\nCost:" + game.spells.coinSpell.powerCost + " mana");
+  document.getElementById("makeCoinsDurationUpg").setAttribute('ach-tooltip', "Increase Duration, but also increase Cost for " + game.spells.coinSpell.durationCost + " mana");
+  document.getElementById("makeCoinsCostUpg").setAttribute('ach-tooltip', "Decrease Cost for " + game.spells.coinSpell.costCost + " mana");
+  document.getElementById("makeFocusPowerUpg").setAttribute('ach-tooltip', "Increase Power, but decrease Duration and increase Cost for " + game.spells.focusSpell.powerCost + " mana");
+  document.getElementById("makeFocusDurationUpg").setAttribute('ach-tooltip', "Increase Duration, but also increase Cost for " + game.spells.focusSpell.durationCost + " mana");
+  document.getElementById("makeFocusCostUpg").setAttribute('ach-tooltip', "Decrease Cost for " + game.spells.focusSpell.costCost + " mana");
+}
 
 
 setInterval(function() {
@@ -149,3 +149,4 @@ setInterval(function() {
 
 
 updateSpells();
+updateTooltips()
