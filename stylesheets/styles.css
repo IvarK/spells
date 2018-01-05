@@ -45,6 +45,15 @@ body {
   font-size: 25px;
 }
 
+.spellUpg {
+  width: 25px;
+  height: 25px;
+  border: 1px solid #2573e9;
+  background: #acc6ec
+  border-radius: 2px;
+  font-size: 20px
+}
+
 .castLocked {
   width: 100px;
   height: 30px;
@@ -86,4 +95,63 @@ body {
     font-size: 16px;
     border-radius: 5px;
     transition-duration: 0.1s;
+}
+
+[ach-tooltip] {
+    position: relative;
+    z-index: 2;
+}
+
+[ach-tooltip]:before,
+[ach-tooltip]:after {
+    visibility: hidden;
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+    filter: progid: DXImageTransform.Microsoft.Alpha(Opacity=0);
+    opacity: 0;
+    pointer-events: none;
+}
+
+[ach-tooltip]:before {
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    margin-bottom: 5px;
+    margin-left: -80px;
+    padding: 7px;
+    width: 160px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+    background-color: #000;
+    background-color: hsla(0, 0%, 5%, 0.9);
+    color: #fff;
+    content: attr(ach-tooltip);
+    text-align: center;
+    font-size: 14px;
+    line-height: 1.2;
+    transition-duration: .5s;
+}
+
+[ach-tooltip]:after {
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    margin-left: -5px;
+    width: 0;
+    border-top: 5px solid #000;
+    border-top: 5px solid hsla(0, 0%, 5%, 0.9);
+    border-right: 5px solid transparent;
+    border-left: 5px solid transparent;
+    content: " ";
+    font-size: 0;
+    line-height: 0;
+    transition-duration: .5s;
+}
+
+[ach-tooltip]:hover:before,
+[ach-tooltip]:hover:after {
+    visibility: visible;
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
+    filter: progid: DXImageTransform.Microsoft.Alpha(Opacity=100);
+    opacity: 1;
 }
