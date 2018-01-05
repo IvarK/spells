@@ -1,0 +1,89 @@
+@font-face {
+  font-family: Magic;
+  src: url("MagicSchoolOne.ttf")
+}
+
+@font-face {
+  font-family: SourceSansPro;
+  src: url("SourceSansPro-Regular.ttf")
+}
+
+*{
+  font-family: SourceSansPro;
+  outline: none;
+}
+
+
+body {
+  margin: 40px;
+  text-align: center;
+}
+
+.spellType {
+  text-align:center;
+  font-size: 50px;
+  margin: 10px;
+  font-family: Magic;
+}
+
+.spellName {
+  text-align:center;
+  font-size: 18px;
+  margin: 5px;
+  font-weight:bold;
+}
+
+.spellCast {
+  width: 100px;
+  height: 30px;
+  border: none;
+  border-bottom: 2px solid #2573e9;
+  background: #acc6ec;
+  border-radius: 2px;
+  cursor: pointer;
+  transition-duration: 0.3s;
+  font-size: 25px;
+}
+
+.castLocked {
+  width: 100px;
+  height: 30px;
+  border: none;
+  border-bottom: 2px solid #2573e9;
+  background: #3c4046;
+  border-radius: 2px;
+  transition-duration: 0.3s;
+  font-size: 25px;
+}
+
+.spellCast:hover {
+  background: #88a4ca;
+  border-bottom: 2px solid #0f53b9;
+}
+
+.spellDiv {
+  border: 2px solid rgb(107, 107, 107);
+  height: 200px;
+  width: 180px;
+  text-align:center;
+  margin: auto 10px;
+  display: inline-block;
+  vertical-align: top;
+}
+
+#mana {
+    width: 98%;
+    background-color: #A3A3A3;
+    border-radius: 5px;
+
+}
+
+#currentMana {
+    width: 0%;
+    height: 23px;
+    background-color: #2764c6;
+    color: black;
+    font-size: 16px;
+    border-radius: 5px;
+    transition-duration: 0.1s;
+}
