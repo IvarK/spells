@@ -162,10 +162,10 @@ function updateInfo() {
 	document.getElementById("currentMana").style.width = game.currentMana * 100 / game.maxMana + "%";
 
 	document.getElementById("coinInfo").innerHTML = "You have " + Math.floor(game.coins) + " coins.";
-	document.getElementById("cps").innerHTML = (game.spells.coinSpell.durationLeft === 0) ? "0 coins per second." : getCPS() + " coins per second.";
+	document.getElementById("cps").innerHTML = (game.spells.coinSpell.durationLeft === 0) ? "0 coins per second." : getCPS().toFixed(1) + " coins per second.";
 
 	document.getElementById("focusInfo").innerHTML = "You have " + Math.floor(game.focus) + " focus.";
-	document.getElementById("fps").innerHTML = (game.spells.focusSpell.durationLeft === 0) ? "0 focus per second." : getFPS() + " focus per second.";
+	document.getElementById("fps").innerHTML = (game.spells.focusSpell.durationLeft === 0) ? "0 focus per second." : getFPS().toFixed(1) + " focus per second.";
 }
 
 function updateSpells() {
