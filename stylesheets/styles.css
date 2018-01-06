@@ -59,6 +59,16 @@ body {
   background: #8494ac;
 }
 
+.spellUpgLocked {
+  width: 30px;
+  height: 30px;
+  border: 1px solid #2573e9;
+  background: #3c4046;
+  border-radius: 2px;
+  font-size: 20px;
+  cursor: pointer;
+}
+
 .focusUpg {
   width: 150px;
   height: 30px;
@@ -71,6 +81,16 @@ body {
 
 .focusUpg:hover {
   background: #8494ac;
+}
+
+.focusLocked {
+  width: 150px;
+  height: 30px;
+  border: 1px solid #2573e9;
+  background: #3c4046;
+  border-radius: 2px;
+  font-size: 20px;
+  cursor: pointer;
 }
 
 .castLocked {
