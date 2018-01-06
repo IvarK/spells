@@ -59,6 +59,20 @@ body {
   background: #8494ac;
 }
 
+.focusUpg {
+  width: 150px;
+  height: 30px;
+  border: 1px solid #2573e9;
+  background: #acc6ec;
+  border-radius: 2px;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.focusUpg:hover {
+  background: #8494ac;
+}
+
 .castLocked {
   width: 100px;
   height: 30px;
@@ -136,7 +150,7 @@ body {
     line-height: 1.2;
     transition-duration: .5s;
     white-space: pre;
-    
+
 }
 
 [ach-tooltip]:after {

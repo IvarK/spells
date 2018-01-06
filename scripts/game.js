@@ -22,12 +22,19 @@ var Creation = function Creation(name, cost, duration, power,
 };
 
 var creationUpgrades = {
-  powerUpgPowerMult: 1.2,
-  powerUpgDurationMult: 0.9,
-  durationUpgDurationMult: 1.2,
-  durationUpgCostMult: 1.4,
-  costUpgCostMult: 0.7,
-  upgradesScaling: 1.2
+	powerUpgPowerMult: 1.2,
+	powerUpgDurationMult: 0.9,
+	durationUpgDurationMult: 1.2,
+	durationUpgCostMult: 1.4,
+	costUpgCostMult: 0.7,
+	upgradesScaling: 1.2
+};
+
+var manaUpgrades = {
+	capUpgMult: 2.5,
+	capUpgCostMult: 30,
+	regenUpgMult: 2,
+	regenUpgCostMult: 50
 };
 
 
@@ -37,6 +44,9 @@ game = {
 	maxMana: 100,
 	currentMana: 100,
 	mps: 5,
+	//Arbitrary numbers for now, of course
+	capUpgCost: 75,
+	regenUpgCost: 100,
 	spells: {
 		createSpell: new Conjuration("Cantio Incantamentum", 50),
 		coinSpell: new Creation("Fabricatio argentaria", 30, 30, 5, 100, 150, 200),
@@ -61,6 +71,8 @@ function createSpell() {
 			document.getElementById("makeFocus").style.display = "inline-block";
 			game.spells.createSpell.cost = 150;
 			document.getElementById("focusInfoDiv").style.visibility = "visible";
+			document.getElementById("focusShop").style.display = "block";
+			document.getElementById("focusShop").style.visibility = "visible";
 	}
 	game.spells.createSpell.timesCast++;
 	updateSpells();
@@ -89,35 +101,51 @@ function getFPS() {
 }
 
 function upgradePower(spellName) {
-  spellToUp = game.spells[spellName];
-  if(game.coins < spellToUp.powerCost) return false;
-  game.coins -= spellToUp.powerCost;
-  spellToUp.power *= creationUpgrades.powerUpgPowerMult;
-  spellToUp.duration *= creationUpgrades.powerUpgDurationMult;
-  spellToUp.powerCost *= creationUpgrades.upgradesScaling;
-  focuupdateTooltips;
-  updateSpells()
+	spellToUp = game.spells[spellName];
+	if (game.coins < spellToUp.powerCost) return false;
+	game.coins -= spellToUp.powerCost;
+	spellToUp.power *= creationUpgrades.powerUpgPowerMult;
+	spellToUp.duration *= creationUpgrades.powerUpgDurationMult;
+	spellToUp.powerCost *= creationUpgrades.upgradesScaling;
+	updateTooltips();
+	updateSpells();
 }
 
 function upgradeDuration(spellName) {
-  spellToUp = game.spells[spellName];
-  if(game.coins < spellToUp.durationCost) return false;
-  game.coins -= spellToUp.durationCost;
-  spellToUp.duration *= creationUpgrades.durationUpgDurationMult;
-  spellToUp.cost *= creationUpgrades.durationUpgCostMult;
-  spellToUp.durationCost *= creationUpgrades.upgradesScaling;
-  focuupdateTooltips;
-  updateSpells()
+	spellToUp = game.spells[spellName];
+	if (game.coins < spellToUp.durationCost) return false;
+	game.coins -= spellToUp.durationCost;
+	spellToUp.duration *= creationUpgrades.durationUpgDurationMult;
+	spellToUp.cost *= creationUpgrades.durationUpgCostMult;
+	spellToUp.durationCost *= creationUpgrades.upgradesScaling;
+	updateTooltips();
+	updateSpells();
 }
 
 function upgradeCost(spellName) {
-  spellToUp = game.spells[spellName];
-  if(game.coins < spellToUp.costCost) return false;
-  game.coins -= spellToUp.costCost;
-  spellToUp.cost *= creationUpgrades.costUpgCostMult;
-  spellToUp.costCost *= creationUpgrades.upgradesScaling;
-  focuupdateTooltips;
-  updateSpells()
+	spellToUp = game.spells[spellName];
+	if (game.coins < spellToUp.costCost) return false;
+	game.coins -= spellToUp.costCost;
+	spellToUp.cost *= creationUpgrades.costUpgCostMult;
+	spellToUp.costCost *= creationUpgrades.upgradesScaling;
+	updateTooltips();
+	updateSpells();
+}
+
+function manaCapUpgrade() {
+	if (game.focus < game.capUpgCost) return false;
+	game.focus -= game.capUpgCost;
+	game.maxMana *= manaUpgrades.capUpgMult;
+	game.capUpgCost *= manaUpgrades.capUpgCostMult;
+	updateTooltips();
+}
+
+function manaRegenUpgrade() {
+	if (game.focus < game.regenUpgCost) return false;
+	game.focus -= game.regenUpgCost;
+	game.mps *= manaUpgrades.regenUpgMult;
+	game.regenUpgCost *= manaUpgrades.regenUpgCostMult;
+	updateTooltips();
 }
 
 
@@ -136,10 +164,10 @@ function updateInfo() {
 function updateSpells() {
 	document.getElementById("createSpellCost").innerHTML = "Cost: " + game.spells.createSpell.cost + " Mana";
 	document.getElementById("makeCoinsCost").innerHTML = "Cost: " + game.spells.coinSpell.cost + " Mana";
-  document.getElementById("makeFocusCost").innerHTML = "Cost: " + game.spells.focusSpell.cost + " Mana";
-  
-  document.getElementById("makeCoinsDescription").innerHTML = "Creates " + getCPS() + " coins per second";
-  document.getElementById("makeFocusDescription").innerHTML = "Creates " + getFPS() + " focus per second";
+	document.getElementById("makeFocusCost").innerHTML = "Cost: " + game.spells.focusSpell.cost + " Mana";
+
+	document.getElementById("makeCoinsDescription").innerHTML = "Creates " + getCPS() + " coins per second";
+	document.getElementById("makeFocusDescription").innerHTML = "Creates " + getFPS() + " focus per second";
 }
 
 function updateCastButtons() {
@@ -157,12 +185,14 @@ function updateDurations() {
 
 //Change to Power -> New power, Duration -> New duration, etc. with coloring in green for good and red for bad
 function updateTooltips() {
-	document.getElementById("makeCoinsPowerUpg").setAttribute('ach-tooltip', "Power -> "+(creationUpgrades.powerUpgPowerMult*game.spells.coinSpell.power).toFixed(1)+"\nDuration ->" + (creationUpgrades.powerUpgDurationMult*game.spells.coinSpell.duration).toFixed(1) + "\n Cost: " + game.spells.coinSpell.powerCost.toFixed(0) +" coins");
-	document.getElementById("makeCoinsDurationUpg").setAttribute('ach-tooltip', "Duration -> "+(creationUpgrades.durationUpgDurationMult*game.spells.coinSpell.duration).toFixed(1)+"\nMana cost ->" + (creationUpgrades.durationUpgCostMult*game.spells.coinSpell.cost).toFixed(1) + "\n Cost: " + game.spells.coinSpell.durationCost.toFixed(0) +" coins");
-	document.getElementById("makeCoinsCostUpg").setAttribute('ach-tooltip', "Mana cost -> "+(creationUpgrades.costUpgCostMult*game.spells.coinSpell.cost).toFixed(1)+"\nCost: " + game.spells.coinSpell.costCost.toFixed(0) +" coins");
-	document.getElementById("makeFocusPowerUpg").setAttribute('ach-tooltip', "Power -> "+(creationUpgrades.powerUpgPowerMult*game.spells.focusSpell.power).toFixed(1)+"\nDuration ->" + (creationUpgrades.powerUpgDurationMult*game.spells.focusSpell.duration).toFixed(1) + "\n Cost: " + game.spells.focusSpell.powerCost.toFixed(0) +" coins");
-	document.getElementById("makeFocusDurationUpg").setAttribute('ach-tooltip', "Duration -> "+(creationUpgrades.durationUpgDurationMult*game.spells.focusSpell.duration).toFixed(1)+"\nMana cost ->" + (creationUpgrades.durationUpgCostMult*game.spells.focusSpell.cost).toFixed(1) + "\n Cost: " + game.spells.focusSpell.durationCost.toFixed(0) +" coins");
-	document.getElementById("makeFocusCostUpg").setAttribute('ach-tooltip', "Mana cost -> "+(creationUpgrades.costUpgCostMult*game.spells.focusSpell.cost).toFixed(1)+"\nCost: " + game.spells.focusSpell.costCost.toFixed(0) +" coins");
+	document.getElementById("makeCoinsPowerUpg").setAttribute('ach-tooltip', "Power -> " + (creationUpgrades.powerUpgPowerMult * game.spells.coinSpell.power).toFixed(1) + "\nDuration ->" + (creationUpgrades.powerUpgDurationMult * game.spells.coinSpell.duration).toFixed(1) + "\n Cost: " + game.spells.coinSpell.powerCost.toFixed(0) + " coins");
+	document.getElementById("makeCoinsDurationUpg").setAttribute('ach-tooltip', "Duration -> " + (creationUpgrades.durationUpgDurationMult * game.spells.coinSpell.duration).toFixed(1) + "\nMana cost ->" + (creationUpgrades.durationUpgCostMult * game.spells.coinSpell.cost).toFixed(1) + "\n Cost: " + game.spells.coinSpell.durationCost.toFixed(0) + " coins");
+	document.getElementById("makeCoinsCostUpg").setAttribute('ach-tooltip', "Mana cost -> " + (creationUpgrades.costUpgCostMult * game.spells.coinSpell.cost).toFixed(1) + "\nCost: " + game.spells.coinSpell.costCost.toFixed(0) + " coins");
+	document.getElementById("makeFocusPowerUpg").setAttribute('ach-tooltip', "Power -> " + (creationUpgrades.powerUpgPowerMult * game.spells.focusSpell.power).toFixed(1) + "\nDuration ->" + (creationUpgrades.powerUpgDurationMult * game.spells.focusSpell.duration).toFixed(1) + "\n Cost: " + game.spells.focusSpell.powerCost.toFixed(0) + " coins");
+	document.getElementById("makeFocusDurationUpg").setAttribute('ach-tooltip', "Duration -> " + (creationUpgrades.durationUpgDurationMult * game.spells.focusSpell.duration).toFixed(1) + "\nMana cost ->" + (creationUpgrades.durationUpgCostMult * game.spells.focusSpell.cost).toFixed(1) + "\n Cost: " + game.spells.focusSpell.durationCost.toFixed(0) + " coins");
+	document.getElementById("makeFocusCostUpg").setAttribute('ach-tooltip', "Mana cost -> " + (creationUpgrades.costUpgCostMult * game.spells.focusSpell.cost).toFixed(1) + "\nCost: " + game.spells.focusSpell.costCost.toFixed(0) + " coins");
+	document.getElementById("manaCapUpg").setAttribute('ach-tooltip', "Mana cap -> " + (manaUpgrades.capUpgMult * game.maxMana) + "\nCost: " + game.capUpgCost + " focus");
+	document.getElementById("manaRegenUpg").setAttribute('ach-tooltip', "Mana regen -> " + (manaUpgrades.regenUpgMult * game.mps) + "/s\nCost: " + game.regenUpgCost + " focus");
 }
 
 
@@ -194,5 +224,4 @@ setInterval(function() {
 
 
 updateSpells();
-updateTooltips()
-
+updateTooltips();
