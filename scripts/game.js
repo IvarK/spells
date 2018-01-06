@@ -101,7 +101,6 @@ function getFPS() {
 }
 
 function upgradePower(spellName) {
-<<<<<<< HEAD
 	spellToUp = game.spells[spellName];
 	if (game.coins < spellToUp.powerCost) return false;
 	game.coins -= spellToUp.powerCost;
@@ -147,15 +146,14 @@ function manaRegenUpgrade() {
 	game.mps *= manaUpgrades.regenUpgMult;
 	game.regenUpgCost *= manaUpgrades.regenUpgCostMult;
 	updateTooltips();
-=======
   spellToUp = game.spells[spellName];
   if(game.coins < spellToUp.powerCost) return false;
   game.coins -= spellToUp.powerCost;
   spellToUp.power *= creationUpgrades.powerUpgPowerMult;
   spellToUp.duration *= creationUpgrades.powerUpgDurationMult;
   spellToUp.powerCost *= creationUpgrades.upgradesScaling;
-  updateTooltips;
-  updateSpells()
+  updateTooltips();
+  updateSpells();
 }
 
 function upgradeDuration(spellName) {
@@ -165,8 +163,8 @@ function upgradeDuration(spellName) {
   spellToUp.duration *= creationUpgrades.durationUpgDurationMult;
   spellToUp.cost *= creationUpgrades.durationUpgCostMult;
   spellToUp.durationCost *= creationUpgrades.upgradesScaling;
-  updateTooltips;
-  updateSpells()
+  updateTooltips();
+  updateSpells();
 }
 
 function upgradeCost(spellName) {
@@ -175,9 +173,8 @@ function upgradeCost(spellName) {
   game.coins -= spellToUp.costCost;
   spellToUp.cost *= creationUpgrades.costUpgCostMult;
   spellToUp.costCost *= creationUpgrades.upgradesScaling;
-  updateTooltips;
-  updateSpells()
->>>>>>> refs/remotes/IvarK/master
+  updateTooltips();
+  updateSpells();
 }
 
 
@@ -196,17 +193,10 @@ function updateInfo() {
 function updateSpells() {
 	document.getElementById("createSpellCost").innerHTML = "Cost: " + game.spells.createSpell.cost + " Mana";
 	document.getElementById("makeCoinsCost").innerHTML = "Cost: " + game.spells.coinSpell.cost + " Mana";
-<<<<<<< HEAD
-	document.getElementById("makeFocusCost").innerHTML = "Cost: " + game.spells.focusSpell.cost + " Mana";
-
-	document.getElementById("makeCoinsDescription").innerHTML = "Creates " + getCPS() + " coins per second";
-	document.getElementById("makeFocusDescription").innerHTML = "Creates " + getFPS() + " focus per second";
-=======
   document.getElementById("makeFocusCost").innerHTML = "Cost: " + game.spells.focusSpell.cost + " Mana";
-  
+
   document.getElementById("makeCoinsDescription").innerHTML = "Creates " + getCPS().toFixed(1) + " coins per second";
   document.getElementById("makeFocusDescription").innerHTML = "Creates " + getFPS().toFixed(1) + " focus per second";
->>>>>>> refs/remotes/IvarK/master
 }
 
 function updateCastButtons() {
