@@ -11,17 +11,21 @@
     <div id="mana">
       <div id="currentMana"></div>
     </div>
+    <div id="focusShop" style="display: none;">
+      <button id="manaCapUpg" class="focusUpg" onclick="manaCapUpgrade()">Mana Cap</button>
+      <button id="manaRegenUpg" class="focusUpg" onclick="manaRegenUpgrade()">Mana Regen</button>
+    </div>
     <div style="width: 33%; float:left">
       <div style="text-align:center; font-size: 20px;" id="manaInfo">Mana: 100/100</div>
       <div style="text-align:center; font-size: 20px;" id="mps">5 per second.</div>
     </div>
     <div style="width: 33%; float:left; visibility: hidden;" id="coinInfoDiv">
-      <div style="text-align:center; font-size: 20px;" id="coinInfo">Mana: 100/100</div>
-      <div style="text-align:center; font-size: 20px;" id="cps">5 per second.</div>
+      <div style="text-align:center; font-size: 20px;" id="coinInfo">Coins: 0</div>
+      <div style="text-align:center; font-size: 20px;" id="cps">0 per second.</div>
     </div>
     <div style="width: 33%; float:left; visibility: hidden;" id="focusInfoDiv">
-      <div style="text-align:center; font-size: 20px;" id="focusInfo">Mana: 100/100</div>
-      <div style="text-align:center; font-size: 20px;" id="fps">5 per second.</div>
+      <div style="text-align:center; font-size: 20px;" id="focusInfo">Focus: 0</div>
+      <div style="text-align:center; font-size: 20px;" id="fps">0 per second.</div>
     </div>
   </div>
   <div id="Conjuration">
