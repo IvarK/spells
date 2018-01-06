@@ -74,6 +74,21 @@
       <button id="makeFocusbtn" class="spellCast" onclick="makeFocus()">Cast</button>
     </div>
 
+    <div class="spellDiv" id="coinMult" style="display: none">
+      <br>
+      <span class="spellName">Multiplicationem fab. arg.</span>
+      <div id="coinMultDescription">Multiplies your coin production by 2</div>
+      <br>
+      <button id="coinMultPowerUpg" class="spellUpg" onclick="upgradePower('coinMultSpell')">P</button>
+      <button id="coinMultDurationUpg" class="spellUpg" onclick="upgradeDuration('coinMultSpell')">D</button>
+      <button id="coinMultCostUpg" class="spellUpg" onclick="upgradeCost('coinMultSpell')">C</button>
+      <br>
+      <div id="coinMultDuration"></div>
+      <div id="coinMultCost">Cost: 100 Mana</div>
+      <br>
+      <button id="coinMultbtn" class="spellCast" onclick="coinMult()">Cast</button>
+    </div>
+
   </div>
 </body>
 <script src="scripts/game.js" type="text/javascript"></script>
