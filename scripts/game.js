@@ -21,13 +21,22 @@ var Creation = function Creation(name, cost, duration, power,
 	this.timesCast = 0;
 };
 
+
+var Autocast = function Autocast() {
+	this.target = 0
+	this.waitUntilMaxMana = false
+	this.manaLimit = 0
+	this.waitForSpell = 0
+}
+
 var creationUpgrades = {
 	powerUpgPowerMult: 1.2,
 	powerUpgDurationMult: 0.9,
 	durationUpgDurationMult: 1.2,
 	durationUpgCostMult: 1.4,
-	costUpgCostMult: 0.7,
-	upgradesScaling: 1.2
+	costUpgCostMult: 0.9,
+	upgradesScaling: 1.3,
+	costUpgScaling: 1.5
 };
 
 var manaUpgrades = {
@@ -127,7 +136,7 @@ function upgradeCost(spellName) {
 	if (game.coins < spellToUp.costCost) return false;
 	game.coins -= spellToUp.costCost;
 	spellToUp.cost *= creationUpgrades.costUpgCostMult;
-	spellToUp.costCost *= creationUpgrades.upgradesScaling;
+	spellToUp.costCost *= creationUpgrades.costUpgScaling;
 	updateTooltips();
 	updateSpells();
 }
