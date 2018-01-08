@@ -128,8 +128,7 @@
       <div>is running.</div>
     </div>
 
-      <br>
-      <div class="spellDiv" id="caster2" style="display:none">
+    <div class="spellDiv" id="caster2" style="display:none">
       <button class="casterBtnOff" id="2isOn" onclick="toggleCaster(2)">Activate</button>
       <br>
 
@@ -164,6 +163,26 @@
       <br>
       <button class="casterBtnOff" id="3waitfor" onclick="toggleCasterWaitFor(3)">Cast only when</button>
       <select onchange="updateCasters()" id="3waitforTarget" class="targetSelect">
+        <option></option>
+      </select>
+      <div>is running.</div>
+    </div>
+
+    <div class="spellDiv" id="caster4" style="display:none">
+      <button class="casterBtnOff" id="4isOn" onclick="toggleCaster(4)">Activate</button>
+      <br>
+
+      <span>Target:</span>
+      <select onchange="updateCasters()" id="4target" class="targetSelect">
+        <option></option>
+      </select>
+      <br>
+      <br>
+      <button class="casterBtnOff" id="4fullmana" onclick="toggleCasterFullMana(4)">Cast when full mana</button>
+      <br>
+      <br>
+      <button class="casterBtnOff" id="4waitfor" onclick="toggleCasterWaitFor(4)">Cast only when</button>
+      <select onchange="updateCasters()" id="4waitforTarget" class="targetSelect">
         <option></option>
       </select>
       <div>is running.</div>
