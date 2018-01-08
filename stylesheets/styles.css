@@ -241,7 +241,7 @@ body {
     text-align: center;
     font-size: 14px;
     line-height: 1.2;
-    transition-duration: .5s;
+    transition-duration: .2s;
     white-space: pre;
 
 }
@@ -259,7 +259,7 @@ body {
     content: " ";
     font-size: 0;
     line-height: 0;
-    transition-duration: .5s;
+    transition-duration: .2s;
 }
 
 [ach-tooltip]:hover:before,
