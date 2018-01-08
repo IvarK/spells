@@ -35,8 +35,8 @@ var Autocast = function Autocast() {
 var creationUpgrades = {
 	powerUpgPowerMult: 1.2,
 	powerUpgDurationMult: 0.9,
-	durationUpgDurationMult: 1.2,
-	durationUpgCostMult: 1.2,
+	durationUpgDurationMult: 1.3,
+	durationUpgCostMult: 1.15,
 	costUpgCostMult: 0.9,
 	upgradesScaling: 1.3,
 	costUpgScaling: 1.5
@@ -136,7 +136,7 @@ function createSpell() {
 
 		case 3:
 			document.getElementById("createCaster").style.display = "inline-block";
-			game.conjurationSpells.createSpell.cost = 400;
+			game.conjurationSpells.createSpell.cost = 99999999;
 	}
 	game.conjurationSpells.createSpell.timesCast++;
 	updateSpells();
@@ -167,7 +167,7 @@ function createSpell() {
 function createCaster() {
 	if (game.currentMana < game.conjurationSpells.createCaster.cost) return false;
 	game.currentMana -= game.conjurationSpells.createCaster.cost;
-	game.conjurationSpells.createCaster.cost *= 6;
+	game.conjurationSpells.createCaster.cost *= 4;
 	game.autoCasters.push(new Autocast());
 	game.conjurationSpells.createCaster.timesCast++;
 	show("Autocasters");
