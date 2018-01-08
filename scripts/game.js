@@ -19,7 +19,7 @@ var Creation = function Creation(name, cost, duration, power,
 	this.durationLeft = 0;
 	this.autocast = 0;
 	this.timesCast = 0;
-
+	this.powerBoosts = []
 };
 
 
@@ -68,9 +68,78 @@ game = {
 		focusSpell: new Creation("Focus creo", 50, 20, 2, 300, 500, 700),
 		coinMultSpell: new Creation("Multiplicationem fab.", 70, 10, 2, 700, 1000, 1300),
 	},
+	lastSpell = game.spells.coinSpell,
+	nextBoost = "",
 	autoCasters: [],
 	lastUpdate: new Date().getTime()
 };
+
+function get_save(name) {
+	if (localStorage.getItem("SpellMasterSave") !== null) {
+			return JSON.parse(atob(localStorage.getItem(name)))
+	}
+}
+
+function save() {
+	localStorage.setItem('SpellMasterSave', btoa(JSON.stringify(game)))
+}
+
+function load() {
+	var save = JSON.parse(atob(localStorage.getItem("SpellMasterSave")))
+	if (!save) return
+	game = save
+	onLoad()
+}
+
+function onLoad() {
+	var casts = game.conjurationSpells.createSpell.timesCast
+	var selects = document.getElementsByClassName("targetSelect");
+	var i, select, opt;
+	if (casts >= 1) {
+		show("Creation")
+		document.getElementById("coinInfoDiv").style.visibility = "visible";
+		for (i = 0; i < selects.length; i++) {
+			select = selects[i];
+			opt = document.createElement('option');
+			opt.value = "coinSpell";
+			opt.innerHTML = game.spells.coinSpell.name;
+			select.appendChild(opt);
+		}
+	}
+
+	if (casts >= 2) {
+		document.getElementById("makeFocus").style.display = "inline-block";
+		document.getElementById("focusInfoDiv").style.visibility = "visible";
+		document.getElementById("focusShop").style.display = "block";
+		document.getElementById("focusShop").style.visibility = "visible";
+		for (i = 0; i < selects.length; i++) {
+			select = selects[i];
+			opt = document.createElement('option');
+			opt.value = "focusSpell";
+			opt.innerHTML = game.spells.focusSpell.name;
+			select.appendChild(opt);
+		}
+	}
+
+	if (casts >= 3) {
+		document.getElementById("Enhancion").style.display = "block";
+		for (i = 0; i < selects.length; i++) {
+			select = selects[i];
+			opt = document.createElement('option');
+			opt.value = "coinMultSpell";
+			opt.innerHTML = game.spells.coinMultSpell.name;
+			select.appendChild(opt);
+		}
+	}
+
+	if (casts >= 4) document.getElementById("createCaster").style.display = "inline-block";
+
+	for (i = 0; i<game.conjurationSpells.createCaster.timesCast; i++) {
+		document.getElementById("caster" + i).style.display = "inline-block";
+		show("Autocasters")
+	}
+
+}
 
 
 function show(elemName) {
@@ -181,6 +250,7 @@ function makeCoins() {
 	game.currentMana -= game.spells.coinSpell.cost;
 	game.spells.coinSpell.durationLeft = game.spells.coinSpell.duration;
 	game.spells.coinSpell.timesCast++;
+	game.lastSpell = game.spells.coinSpell
 }
 
 function makeFocus() {
@@ -189,6 +259,7 @@ function makeFocus() {
 	game.currentMana -= game.spells.focusSpell.cost;
 	game.spells.focusSpell.durationLeft = game.spells.focusSpell.duration;
 	game.spells.focusSpell.timesCast++;
+	game.lastSpell = game.spells.focusSpell
 }
 
 function coinMult() {
@@ -197,6 +268,7 @@ function coinMult() {
 	game.currentMana -= game.spells.coinMultSpell.cost;
 	game.spells.coinMultSpell.durationLeft = game.spells.coinMultSpell.duration;
 	game.spells.coinMultSpell.timesCast++;
+	game.lastSpell = game.spells.coinMultSpell
 }
 
 
@@ -204,13 +276,22 @@ function coinMult() {
 function getCPS() {
 	coinMultiplier = 1;
 	if (game.spells.coinMultSpell.durationLeft !== 0) {
-		coinMultiplier = game.spells.coinMultSpell.power;
+		coinMultiplier = getSpellPower(game.spells.coinMultSpell);
 	}
-	return game.spells.coinSpell.power * coinMultiplier;
+	return getSpellPower(game.spells.coinSpell) * coinMultiplier;
 }
 
 function getFPS() {
-	return game.spells.focusSpell.power;
+	return getSpellPower(game.spells.focusSpell);
+}
+
+
+function getSpellPower(spell) {
+	var ret = spell.power
+	for (var i = 0; i<spell.powerBoosts.length; i++) {
+			 ret *= eval(spell.powerBoosts[i])
+	}
+	return ret
 }
 
 function upgradePower(spellName) {
@@ -438,6 +519,9 @@ function updateTooltips() {
 }
 
 
+
+
+
 setInterval(function() {
 	thisUpdate = new Date().getTime();
 	delta = thisUpdate - game.lastUpdate;
@@ -459,6 +543,8 @@ setInterval(function() {
 		game.focus += getFPS() * delta;
 	}
 
+	for (var i=0;i<game.spells.length;i++) if (game.spells[i].durationLeft == 0) game.spells[i].boosts = []
+
 	for (var i in game.autoCasters) autoCast(game.autoCasters[i]);
 
 	updateInfo();
@@ -469,7 +555,8 @@ setInterval(function() {
 	game.lastUpdate = thisUpdate;
 }, 50);
 
+setInterval(save, 10000)
 
-
+load()
 updateSpells();
 updateTooltips();
