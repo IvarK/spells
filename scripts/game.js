@@ -19,7 +19,7 @@ var Creation = function Creation(name, cost, duration, power,
 	this.durationLeft = 0;
 	this.autocast = 0;
 	this.timesCast = 0;
-	this.powerBoosts = []
+	this.powerBoosts = [];
 };
 
 
@@ -68,35 +68,36 @@ game = {
 		focusSpell: new Creation("Focus creo", 50, 20, 2, 300, 500, 700),
 		coinMultSpell: new Creation("Multiplicationem fab.", 70, 10, 2, 700, 1000, 1300),
 	},
-	lastSpell = game.spells.coinSpell,
-	nextBoost = "",
+	lastSpell: 0,
+	nextBoost: "",
 	autoCasters: [],
 	lastUpdate: new Date().getTime()
 };
+game.lastSpell = game.spells.coinSpell;
 
 function get_save(name) {
 	if (localStorage.getItem("SpellMasterSave") !== null) {
-			return JSON.parse(atob(localStorage.getItem(name)))
+			return JSON.parse(atob(localStorage.getItem(name)));
 	}
 }
 
 function save() {
-	localStorage.setItem('SpellMasterSave', btoa(JSON.stringify(game)))
+	localStorage.setItem('SpellMasterSave', btoa(JSON.stringify(game)));
 }
 
 function load() {
-	var save = JSON.parse(atob(localStorage.getItem("SpellMasterSave")))
-	if (!save) return
-	game = save
-	onLoad()
+	var save = JSON.parse(atob(localStorage.getItem("SpellMasterSave")));
+	if (!save) return;
+	game = save;
+	onLoad();
 }
 
 function onLoad() {
-	var casts = game.conjurationSpells.createSpell.timesCast
+	var casts = game.conjurationSpells.createSpell.timesCast;
 	var selects = document.getElementsByClassName("targetSelect");
 	var i, select, opt;
 	if (casts >= 1) {
-		show("Creation")
+		show("Creation");
 		document.getElementById("coinInfoDiv").style.visibility = "visible";
 		for (i = 0; i < selects.length; i++) {
 			select = selects[i];
@@ -136,7 +137,7 @@ function onLoad() {
 
 	for (i = 0; i<game.conjurationSpells.createCaster.timesCast; i++) {
 		document.getElementById("caster" + i).style.display = "inline-block";
-		show("Autocasters")
+		show("Autocasters");
 	}
 
 }
@@ -250,7 +251,8 @@ function makeCoins() {
 	game.currentMana -= game.spells.coinSpell.cost;
 	game.spells.coinSpell.durationLeft = game.spells.coinSpell.duration;
 	game.spells.coinSpell.timesCast++;
-	game.lastSpell = game.spells.coinSpell
+	game.lastSpell = game.spells.coinSpell;
+	updateTimesCast();
 }
 
 function makeFocus() {
@@ -259,7 +261,8 @@ function makeFocus() {
 	game.currentMana -= game.spells.focusSpell.cost;
 	game.spells.focusSpell.durationLeft = game.spells.focusSpell.duration;
 	game.spells.focusSpell.timesCast++;
-	game.lastSpell = game.spells.focusSpell
+	game.lastSpell = game.spells.focusSpell;
+	updateTimesCast();
 }
 
 function coinMult() {
@@ -268,7 +271,8 @@ function coinMult() {
 	game.currentMana -= game.spells.coinMultSpell.cost;
 	game.spells.coinMultSpell.durationLeft = game.spells.coinMultSpell.duration;
 	game.spells.coinMultSpell.timesCast++;
-	game.lastSpell = game.spells.coinMultSpell
+	game.lastSpell = game.spells.coinMultSpell;
+	updateTimesCast();
 }
 
 
@@ -287,11 +291,11 @@ function getFPS() {
 
 
 function getSpellPower(spell) {
-	var ret = spell.power
-	for (var i = 0; i<spell.powerBoosts.length; i++) {
-			 ret *= eval(spell.powerBoosts[i])
+	var ret = spell.power;
+	for (var i = 0; i < spell.powerBoosts.length; i++) {
+			 ret *= eval(spell.powerBoosts[i]);
 	}
-	return ret
+	return ret;
 }
 
 function upgradePower(spellName) {
@@ -517,6 +521,7 @@ function updateDurations() {
 // idPrefix is the beginning of the buttons' ids (i.e. "makeCoins", "coinMult", etc.)
 // spellScaling is the object containing the different scalings (i.e. creationUpgrades)
 // spellName is the name of the spell in game.spells (i.e. "coinSpell", "focusSpell", etc.)
+// Still gotta do coloring in green for good and red for bad
 function spellUpgTooltips(idPrefix, spellScaling, spellName) {
 	spell = game.spells[spellName];
 	//Power, then Duration, then Cost
@@ -525,18 +530,24 @@ function spellUpgTooltips(idPrefix, spellScaling, spellName) {
 	document.getElementById(idPrefix + "CostUpg").setAttribute('ach-tooltip', "Mana cost -> " + (spellScaling.costUpgCostMult * spell.cost).toFixed(1) + "\nCost: " + spell.costCost.toFixed(0) + " coins");
 }
 
-//Coloring in green for good and red for bad
 function updateTooltips() {
 	spellUpgTooltips("makeCoins", creationUpgrades, "coinSpell");
 	spellUpgTooltips("makeFocus", creationUpgrades, "focusSpell");
 	spellUpgTooltips("coinMult", creationUpgrades, "coinMultSpell");
-	
+
 	document.getElementById("manaCapUpg").setAttribute('ach-tooltip', "Mana cap -> " + (manaUpgrades.capUpgMult * game.maxMana).toFixed(0) + "\nCost: " + game.capUpgCost + " focus");
 	document.getElementById("manaRegenUpg").setAttribute('ach-tooltip', "Mana regen -> " + (manaUpgrades.regenUpgMult * game.mps).toFixed(1) + "/s\nCost: " + game.regenUpgCost + " focus");
 }
 
+function timesCastTextSet(id, spellName) {
+	changeText(id, "Times cast: " + game.spells[spellName].timesCast);
+}
 
-
+function updateTimesCast(){
+	timesCastTextSet("makeCoinsTimesCast", "coinSpell");
+	timesCastTextSet("makeFocusTimesCast", "focusSpell");
+	timesCastTextSet("coinMultTimesCast", "coinMultSpell"); //Add this to spell casts
+}
 
 
 setInterval(function() {
@@ -560,9 +571,9 @@ setInterval(function() {
 		game.focus += getFPS() * delta;
 	}
 
-	for (var i=0;i<game.spells.length;i++) if (game.spells[i].durationLeft == 0) game.spells[i].boosts = []
+	for (var i=0;i<game.spells.length;i++) if (game.spells[i].durationLeft === 0) game.spells[i].boosts = [];
 
-	for (var i in game.autoCasters) autoCast(game.autoCasters[i]);
+	for (i in game.autoCasters) autoCast(game.autoCasters[i]);
 
 	updateInfo();
 	updateButtonLocks();
@@ -572,8 +583,8 @@ setInterval(function() {
 	game.lastUpdate = thisUpdate;
 }, 50);
 
-setInterval(save, 10000)
+setInterval(save, 10000);
 
-load()
+load();
 updateSpells();
 updateTooltips();
