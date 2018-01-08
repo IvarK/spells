@@ -176,6 +176,39 @@ body {
     transition-duration: 0.1s;
 }
 
+.popup {
+    position: absolute;
+    left: 33%;
+    top: 33%;
+    border: 3px solid black;
+    width: 300px;
+    height: 120px;
+    background-color: #E0E0E0;
+    border-radius: 6px;
+    text-align:center;
+    z-index: 2;
+    color: black;
+    font-family: SourceSansPro;
+    padding: 10px;
+    padding-bottom: 15px;
+    display: none;
+}
+
+.storebtn {
+    color: black;
+    background: #F2F2F2;
+    font-weight: bold;
+    font-family: SourceSansPro;
+    border: 1px solid #127A20;
+    width: 120px;
+    height: 25px;
+    transition-duration: 0.2s;
+    cursor: pointer;
+    border-radius: 4px;
+    font-size: 13px;
+    vertical-align: top;
+}
+
 [ach-tooltip] {
     position: relative;
     z-index: 2;
