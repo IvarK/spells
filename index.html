@@ -11,7 +11,7 @@
     <div id="mana">
       <div id="currentMana"></div>
     </div>
-    <div id="focusShop" style="display: none;">
+    <div id="focusShop" style="display: none;" class="noneOnHardReset">
       <button id="manaCapUpg" class="focusUpg" onclick="manaCapUpgrade()">Mana Cap</button>
       <button id="manaRegenUpg" class="focusUpg" onclick="manaRegenUpgrade()">Mana Regen</button>
     </div>
@@ -19,15 +19,18 @@
       <div style="text-align:center; font-size: 20px;" id="manaInfo">Mana: 100/100</div>
       <div style="text-align:center; font-size: 20px;" id="mps">5 per second.</div>
     </div>
-    <div style="width: 33%; float:left; visibility: hidden;" id="coinInfoDiv">
+    <div style="width: 33%; float:left; visibility: hidden;" id="coinInfoDiv" class="hideOnHardReset">
       <div style="text-align:center; font-size: 20px;" id="coinInfo">Coins: 0</div>
       <div style="text-align:center; font-size: 20px;" id="cps">0 per second.</div>
     </div>
-    <div style="width: 33%; float:left; visibility: hidden;" id="focusInfoDiv">
+    <div style="width: 33%; float:left; visibility: hidden;" id="focusInfoDiv" class="hideOnHardReset">
       <div style="text-align:center; font-size: 20px;" id="focusInfo">Focus: 0</div>
       <div style="text-align:center; font-size: 20px;" id="fps">0 per second.</div>
     </div>
   </div>
+  <br>
+  <button id="settingsButton" class="spellCast" onclick="showSettings()">Settings</button>
+  <br>
   <div id="Conjuration" style="width: 50%; float: left">
     <div class="spellType">Conjuration:</div>
     <div class="spellDiv" id="createSpell">
@@ -39,7 +42,7 @@
       <br>
       <button id="createSpellbtn" class="spellCast" onclick="createSpell()">Cast</button>
     </div>
-    <div class="spellDiv" id="createCaster" style="display: none;">
+    <div class="spellDiv noneOnHardReset" id="createCaster" style="display: none;">
       <br>
       <span class="spellName">Facio Artifex Liber</span>
       <div id="createCasterDescription">Creates a new Autocaster.</div>
@@ -50,7 +53,7 @@
     </div>
   </div>
 
-  <div id="Creation" style="display: none; width: 50%; float: left">
+  <div id="Creation" style="display: none; width: 50%; float: left" class="noneOnHardReset">
     <div class="spellType">Creation:</div>
 
     <div class="spellDiv" id="makeCoins">
@@ -85,7 +88,7 @@
 
   </div>
 
-  <div id="Enhancion" style="display: none; width: 50%; float: left">
+  <div id="Enhancion" style="display: none; width: 50%; float: left" class="noneOnHardReset">
     <div class="spellType">Enhancion:</div>
 
     <div class="spellDiv" id="coinMult">
@@ -105,7 +108,7 @@
 
   </div>
 
-  <div id="Autocasters" style="display: none; width: 50%; float: left">
+  <div id="Autocasters" style="display: none; width: 50%; float: left" class="noneOnHardReset">
     <div class="spellType">AutoCaster</div>
 
     <div class="spellDiv" id="caster1">
@@ -128,7 +131,7 @@
       <div>is running.</div>
     </div>
 
-    <div class="spellDiv" id="caster2" style="display:none">
+    <div class="spellDiv" id="caster2" style="display: none">
       <button class="casterBtnOff" id="2isOn" onclick="toggleCaster(2)">Activate</button>
       <br>
 
@@ -147,8 +150,8 @@
       </select>
       <div>is running.</div>
     </div>
-    
-    <div class="spellDiv" id="caster3" style="display:none">
+
+    <div class="spellDiv" id="caster3" style="display: none">
       <button class="casterBtnOff" id="3isOn" onclick="toggleCaster(3)">Activate</button>
       <br>
 
@@ -168,7 +171,7 @@
       <div>is running.</div>
     </div>
 
-    <div class="spellDiv" id="caster4" style="display:none">
+    <div class="spellDiv" id="caster4" style="display: none">
       <button class="casterBtnOff" id="4isOn" onclick="toggleCaster(4)">Activate</button>
       <br>
 
@@ -188,6 +191,16 @@
       <div>is running.</div>
     </div>
 
+  </div>
+  <div class="popup" id="settings">
+        <div id="settingsInternal">Settings screen. Yeah, contains settings. Much wow.</div>
+        <button class="storebtn" style="font-size: 15px" onclick="closeToolTip()" style="display: inline">CLOSE THIS</button>
+        <button class="storebtn" style="font-size: 15px" onclick="hardReset()" style="display: inline">Hard Reset</button>
+        <br>
+        <input type="checkbox" id="hardResetConfirm">
+          <span id="HRCNormal">Check this to confirm Hard Reset</span>
+          <span id="HRCAss" style="display: none">Ass</span>
+        </input>
   </div>
 
 </body>

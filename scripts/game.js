@@ -292,7 +292,8 @@ function toggleCaster(x) {
 
 function toggleCasterFullMana(x) {
 	game.autoCasters[x - 1].waitUntilMaxMana = !game.autoCasters[x - 1].waitUntilMaxMana;
-	if (game.autoCasters[x - 1].waitUntilMaxMana) changeClass(x + "fullmana", "casterBtnOn"); else changeClass(x + "fullmana", "casterBtnOff");
+	if (game.autoCasters[x - 1].waitUntilMaxMana) changeClass(x + "fullmana", "casterBtnOn");
+	else changeClass(x + "fullmana", "casterBtnOff");
 }
 
 function toggleCasterWaitFor(x) {
@@ -313,6 +314,53 @@ function updateCasters() {
 		var waitingFor = game.spells[document.getElementById((i + 1) + "waitforTarget").value];
 		if (target !== undefined) game.autoCasters[i].target = target;
 		if (waitingFor !== undefined) game.autoCasters[i].waitForSpell = waitingFor;
+	}
+}
+
+function closeToolTip() {
+	document.getElementById("HRCNormal").style.display = "inline-block";
+	document.getElementById("HRCAss").style.display = "none";
+	var elements = document.getElementsByClassName("popup");
+	for (var i = 0; i < elements.length; i++) elements[i].style.display = "none";
+}
+
+function showSettings() {
+	document.getElementById("settings").style.display = "block";
+}
+
+function hardReset() {
+	if (document.getElementById("hardResetConfirm").checked) {
+		closeToolTip();
+		game = {
+			coins: 0,
+			focus: 0,
+			maxMana: 100,
+			currentMana: 100,
+			mps: 5,
+			//Arbitrary numbers for now, of course
+			capUpgCost: 75,
+			regenUpgCost: 100,
+			conjurationSpells: {
+				createSpell: new Conjuration("Cantio Incantamentum", 50),
+				createCaster: new Conjuration("Facio Liber Artifex", 150),
+			},
+			spells: {
+				coinSpell: new Creation("Fabricatio argentaria", 30, 30, 5, 100, 150, 200),
+				focusSpell: new Creation("Focus creo", 50, 20, 2, 300, 500, 700),
+				coinMultSpell: new Creation("Multiplicationem fab.", 70, 10, 2, 700, 1000, 1300),
+			},
+			autoCasters: [],
+			lastUpdate: new Date().getTime()
+		};
+		var toHide = document.getElementsByClassName("hideOnHardReset");
+		for (var i = 0; i < toHide.length; i++) toHide[i].style.visibility = "hidden";
+		var toNone = document.getElementsByClassName("noneOnHardReset");
+		for (i = 0; i < toNone.length; i++) toNone[i].style.display = "none";
+		updateSpells();
+		updateTooltips();
+	} else {
+		document.getElementById("HRCNormal").style.display = "none";
+		document.getElementById("HRCAss").style.display = "inline-block";
 	}
 }
 
