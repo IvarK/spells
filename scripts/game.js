@@ -24,15 +24,13 @@ var Creation = function Creation(name, cost, duration, power,
 
 
 var Autocast = function Autocast() {
-	this.target = 0
-	this.waitUntilMaxMana = false
-	this.manaLimit = 0
-	this.waitForSpell = 0
-	this.waiting = false
-	this.isOn = false
-
-	
-}
+	this.target = 0;
+	this.waitUntilMaxMana = false;
+	this.manaLimit = 0;
+	this.waitForSpell = 0;
+	this.waiting = false;
+	this.isOn = false;
+};
 
 var creationUpgrades = {
 	powerUpgPowerMult: 1.2,
@@ -75,26 +73,38 @@ game = {
 };
 
 
-function show(elemName) { document.getElementById(elemName).style.display = "block" }
-function hide(elemName) { document.getElementById(elemName).style.display = "none" }
-function changeText(elemName, text) { document.getElementById(elemName).innerHTML = text }
-function changeClass(elemName, className) { document.getElementById(elemName).className = className }
+function show(elemName) {
+	document.getElementById(elemName).style.display = "block";
+}
+
+function hide(elemName) {
+	document.getElementById(elemName).style.display = "none";
+}
+
+function changeText(elemName, text) {
+	document.getElementById(elemName).innerHTML = text;
+}
+
+function changeClass(elemName, className) {
+	document.getElementById(elemName).className = className;
+}
 
 function createSpell() {
 	if (game.currentMana < game.conjurationSpells.createSpell.cost) return false;
 	game.currentMana -= game.conjurationSpells.createSpell.cost;
-	var selects = document.getElementsByClassName("targetSelect")
+	var selects = document.getElementsByClassName("targetSelect");
+	var i, select, opt;
 	switch (game.conjurationSpells.createSpell.timesCast) {
 		case 0:
 			document.getElementById("Creation").style.display = "block";
 			game.conjurationSpells.createSpell.cost = 100;
 			document.getElementById("coinInfoDiv").style.visibility = "visible";
-			for (var i=0; i<selects.length;i++) {
-				let select = selects[i]
-				var opt = document.createElement('option')
-				opt.value = "coinSpell"
-				opt.innerHTML = game.spells.coinSpell.name
-				select.appendChild(opt)
+			for (i = 0; i < selects.length; i++) {
+				select = selects[i];
+				opt = document.createElement('option');
+				opt.value = "coinSpell";
+				opt.innerHTML = game.spells.coinSpell.name;
+				select.appendChild(opt);
 			}
 			break;
 		case 1:
@@ -103,30 +113,30 @@ function createSpell() {
 			document.getElementById("focusInfoDiv").style.visibility = "visible";
 			document.getElementById("focusShop").style.display = "block";
 			document.getElementById("focusShop").style.visibility = "visible";
-			for (var i=0; i<selects.length;i++) {
-				let select = selects[i]
-				var opt = document.createElement('option')
-				opt.value = "focusSpell"
-				opt.innerHTML = game.spells.focusSpell.name
-				select.appendChild(opt)
+			for (i = 0; i < selects.length; i++) {
+				select = selects[i];
+				opt = document.createElement('option');
+				opt.value = "focusSpell";
+				opt.innerHTML = game.spells.focusSpell.name;
+				select.appendChild(opt);
 			}
 			break;
 
 		case 2:
 			document.getElementById("Enhancion").style.display = "block";
 			game.conjurationSpells.createSpell.cost = 200;
-			for (var i=0; i<selects.length;i++) {
-				let select = selects[i]
-				var opt = document.createElement('option')
-				opt.value = "coinMultSpell"
-				opt.innerHTML = game.spells.coinMultSpell.name
-				select.appendChild(opt)
+			for (i = 0; i < selects.length; i++) {
+				select = selects[i];
+				opt = document.createElement('option');
+				opt.value = "coinMultSpell";
+				opt.innerHTML = game.spells.coinMultSpell.name;
+				select.appendChild(opt);
 			}
-		break;
+			break;
 
 		case 3:
-			document.getElementById("createCaster").style.display = "inline-block"
-			game.conjurationSpells.createSpell.cost = 400
+			document.getElementById("createCaster").style.display = "inline-block";
+			game.conjurationSpells.createSpell.cost = 400;
 	}
 	game.conjurationSpells.createSpell.timesCast++;
 	updateSpells();
@@ -149,20 +159,20 @@ function createSpell() {
 		opt.value = y
 		opt.innerHTML = game.spells[y].name
 		select.appendChild(opt)
-		
+
 	}*/
 
 }
 
 function createCaster() {
-	if (game.currentMana < game.conjurationSpells.createCaster.cost) return false
+	if (game.currentMana < game.conjurationSpells.createCaster.cost) return false;
 	game.currentMana -= game.conjurationSpells.createCaster.cost;
-	game.conjurationSpells.createCaster.cost *= 6
-	game.autoCasters.push(new Autocast())
+	game.conjurationSpells.createCaster.cost *= 6;
+	game.autoCasters.push(new Autocast());
 	game.conjurationSpells.createCaster.timesCast++;
-	show("Autocasters")
-	document.getElementById("caster"+game.conjurationSpells.createCaster.timesCast).style.display = "inline-block"
-	updateSpells()
+	show("Autocasters");
+	document.getElementById("caster" + game.conjurationSpells.createCaster.timesCast).style.display = "inline-block";
+	updateSpells();
 }
 
 function makeCoins() {
@@ -253,58 +263,56 @@ function manaRegenUpgrade() {
 
 
 function autoCast(autoCaster) {
-	if (!autoCaster.isOn) return
+	if (!autoCaster.isOn) return;
 
-	let target = autoCaster.target
-	if (target%1 == 0) return
-	if (target.cost > game.currentMana) return
-	if (autoCaster.waitForSpell%1 !== 0) {
-		if (autoCaster.waitForSpell.durationLeft == 0) return
+	var target = autoCaster.target;
+	if (target % 1 === 0) return;
+	if (target.cost > game.currentMana) return;
+	if (autoCaster.waitForSpell % 1 !== 0) {
+		if (autoCaster.waitForSpell.durationLeft === 0) return;
 	}
-	if (autoCaster.waitUntilMaxMana && game.currentMana !== game.maxMana) return
-	if (autoCaster.manaLimit > game.currentMana) return
-	if (target.durationLeft !== 0) return
+	if (autoCaster.waitUntilMaxMana && game.currentMana !== game.maxMana) return;
+	if (autoCaster.manaLimit > game.currentMana) return;
+	if (target.durationLeft !== 0) return;
 
-	target.durationLeft = target.duration
-	game.currentMana -= target.cost
+	target.durationLeft = target.duration;
+	game.currentMana -= target.cost;
 }
 
 function toggleCaster(x) {
-	game.autoCasters[x-1].isOn = !game.autoCasters[x-1].isOn
-	if (game.autoCasters[x-1].isOn) {
-		changeText(x+"isOn", "Activated")
-		changeClass(x+"isOn", "casterBtnOn")
-	}
-	else {
-		changeText(x+"isOn", "Activate")
-		changeClass(x+"isOn", "casterBtnOff")
+	game.autoCasters[x - 1].isOn = !game.autoCasters[x - 1].isOn;
+	if (game.autoCasters[x - 1].isOn) {
+		changeText(x + "isOn", "Activated");
+		changeClass(x + "isOn", "casterBtnOn");
+	} else {
+		changeText(x + "isOn", "Activate");
+		changeClass(x + "isOn", "casterBtnOff");
 	}
 }
 
 function toggleCasterFullMana(x) {
-	game.autoCasters[x-1].waitUntilMaxMana = !game.autoCasters[x-1].waitUntilMaxMana
-	game.autoCasters[x-1].waitUntilMaxMana ? changeClass(x+"fullmana", "casterBtnOn") : changeClass(x+"fullmana", "casterBtnOff")
+	game.autoCasters[x - 1].waitUntilMaxMana = !game.autoCasters[x - 1].waitUntilMaxMana;
+	if (game.autoCasters[x - 1].waitUntilMaxMana) changeClass(x + "fullmana", "casterBtnOn"); else changeClass(x + "fullmana", "casterBtnOff");
 }
 
 function toggleCasterWaitFor(x) {
-	game.autoCasters[x-1].waiting = !game.autoCasters[x-1].waiting
-	if (game.autoCasters[x-1].waiting) {
-		changeText(x+"waitfor", "Casting only when")
-		changeClass(x+"waitfor", "casterBtnOn")
+	game.autoCasters[x - 1].waiting = !game.autoCasters[x - 1].waiting;
+	if (game.autoCasters[x - 1].waiting) {
+		changeText(x + "waitfor", "Casting only when");
+		changeClass(x + "waitfor", "casterBtnOn");
+	} else {
+		changeText(x + "waitfor", "Cast only when");
+		changeClass(x + "waitfor", "casterBtnOff");
 	}
-	else {
-		changeText(x+"waitfor", "Cast only when")
-		changeClass(x+"waitfor", "casterBtnOff")
-	}
-	
+
 }
 
 function updateCasters() {
-	for (var i=0; i<game.autoCasters.length; i++) {
-		var target = game.spells[document.getElementById((i+1)+"target").value]
-		var waitingFor = game.spells[document.getElementById((i+1)+"waitforTarget").value]
-		if (target !== undefined ) 	game.autoCasters[i].target = target
-		if (waitingFor !== undefined) game.autoCasters[i].waitForSpell = waitingFor
+	for (var i = 0; i < game.autoCasters.length; i++) {
+		var target = game.spells[document.getElementById((i + 1) + "target").value];
+		var waitingFor = game.spells[document.getElementById((i + 1) + "waitforTarget").value];
+		if (target !== undefined) game.autoCasters[i].target = target;
+		if (waitingFor !== undefined) game.autoCasters[i].waitForSpell = waitingFor;
 	}
 }
 
@@ -324,11 +332,11 @@ function updateSpells() {
 	document.getElementById("createSpellCost").innerHTML = "Cost: " + game.conjurationSpells.createSpell.cost.toFixed(0) + " Mana";
 	document.getElementById("createCasterCost").innerHTML = "Cost: " + game.conjurationSpells.createCaster.cost.toFixed(0) + " Mana";
 	document.getElementById("makeCoinsCost").innerHTML = "Cost: " + game.spells.coinSpell.cost.toFixed(0) + " Mana";
-  document.getElementById("makeFocusCost").innerHTML = "Cost: " + game.spells.focusSpell.cost.toFixed(0) + " Mana";
+	document.getElementById("makeFocusCost").innerHTML = "Cost: " + game.spells.focusSpell.cost.toFixed(0) + " Mana";
 	document.getElementById("coinMultCost").innerHTML = "Cost: " + game.spells.coinMultSpell.cost.toFixed(0) + " Mana";
 
-  document.getElementById("makeCoinsDescription").innerHTML = "Creates " + game.spells.coinSpell.power.toFixed(1) + " coins per second";
-  document.getElementById("makeFocusDescription").innerHTML = "Creates " + getFPS().toFixed(1) + " focus per second";
+	document.getElementById("makeCoinsDescription").innerHTML = "Creates " + game.spells.coinSpell.power.toFixed(1) + " coins per second";
+	document.getElementById("makeFocusDescription").innerHTML = "Creates " + getFPS().toFixed(1) + " focus per second";
 	document.getElementById("coinMultDescription").innerHTML = "Multiplies your coin production by " + game.spells.coinMultSpell.power.toFixed(1);
 }
 
@@ -403,7 +411,7 @@ setInterval(function() {
 		game.focus += getFPS() * delta;
 	}
 
-	for (i in game.autoCasters) autoCast(game.autoCasters[i])
+	for (var i in game.autoCasters) autoCast(game.autoCasters[i]);
 
 	updateInfo();
 	updateButtonLocks();
