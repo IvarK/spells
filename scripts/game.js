@@ -19,6 +19,7 @@ var Creation = function Creation(name, cost, duration, power,
 	this.durationLeft = 0;
 	this.autocast = 0;
 	this.timesCast = 0;
+
 };
 
 
@@ -27,20 +28,24 @@ var Autocast = function Autocast() {
 	this.waitUntilMaxMana = false
 	this.manaLimit = 0
 	this.waitForSpell = 0
+	this.waiting = false
+	this.isOn = false
+
+	
 }
 
 var creationUpgrades = {
 	powerUpgPowerMult: 1.2,
 	powerUpgDurationMult: 0.9,
 	durationUpgDurationMult: 1.2,
-	durationUpgCostMult: 1.4,
+	durationUpgCostMult: 1.2,
 	costUpgCostMult: 0.9,
 	upgradesScaling: 1.3,
 	costUpgScaling: 1.5
 };
 
 var manaUpgrades = {
-	capUpgMult: 1.2,
+	capUpgMult: 1.235,
 	capUpgCostMult: 2,
 	regenUpgMult: 1.1,
 	regenUpgCostMult: 5
@@ -56,41 +61,108 @@ game = {
 	//Arbitrary numbers for now, of course
 	capUpgCost: 75,
 	regenUpgCost: 100,
-	spells: {
+	conjurationSpells: {
 		createSpell: new Conjuration("Cantio Incantamentum", 50),
+		createCaster: new Conjuration("Facio Liber Artifex", 150),
+	},
+	spells: {
 		coinSpell: new Creation("Fabricatio argentaria", 30, 30, 5, 100, 150, 200),
 		focusSpell: new Creation("Focus creo", 50, 20, 2, 300, 500, 700),
-		coinMultSpell: new Creation("Multiplicationem fab. arg.", 70, 10, 2, 700, 1000, 1300)
+		coinMultSpell: new Creation("Multiplicationem fab.", 70, 10, 2, 700, 1000, 1300),
 	},
+	autoCasters: [],
 	lastUpdate: new Date().getTime()
 };
 
 
-function createSpell() {
-	if (game.currentMana < game.spells.createSpell.cost) return false;
-	game.currentMana -= game.spells.createSpell.cost;
+function show(elemName) { document.getElementById(elemName).style.display = "block" }
+function hide(elemName) { document.getElementById(elemName).style.display = "none" }
+function changeText(elemName, text) { document.getElementById(elemName).innerHTML = text }
+function changeClass(elemName, className) { document.getElementById(elemName).className = className }
 
-	switch (game.spells.createSpell.timesCast) {
+function createSpell() {
+	if (game.currentMana < game.conjurationSpells.createSpell.cost) return false;
+	game.currentMana -= game.conjurationSpells.createSpell.cost;
+	var selects = document.getElementsByClassName("targetSelect")
+	switch (game.conjurationSpells.createSpell.timesCast) {
 		case 0:
 			document.getElementById("Creation").style.display = "block";
-			game.spells.createSpell.cost = 100;
+			game.conjurationSpells.createSpell.cost = 100;
 			document.getElementById("coinInfoDiv").style.visibility = "visible";
+			for (var i=0; i<selects.length;i++) {
+				let select = selects[i]
+				var opt = document.createElement('option')
+				opt.value = "coinSpell"
+				opt.innerHTML = game.spells.coinSpell.name
+				select.appendChild(opt)
+			}
 			break;
-
 		case 1:
 			document.getElementById("makeFocus").style.display = "inline-block";
-			game.spells.createSpell.cost = 150;
+			game.conjurationSpells.createSpell.cost = 150;
 			document.getElementById("focusInfoDiv").style.visibility = "visible";
 			document.getElementById("focusShop").style.display = "block";
 			document.getElementById("focusShop").style.visibility = "visible";
+			for (var i=0; i<selects.length;i++) {
+				let select = selects[i]
+				var opt = document.createElement('option')
+				opt.value = "focusSpell"
+				opt.innerHTML = game.spells.focusSpell.name
+				select.appendChild(opt)
+			}
 			break;
 
 		case 2:
-			document.getElementById("coinMult").style.display = "inline-block";
-			game.spells.createSpell.cost = 250;
+			document.getElementById("Enhancion").style.display = "block";
+			game.conjurationSpells.createSpell.cost = 200;
+			for (var i=0; i<selects.length;i++) {
+				let select = selects[i]
+				var opt = document.createElement('option')
+				opt.value = "coinMultSpell"
+				opt.innerHTML = game.spells.coinMultSpell.name
+				select.appendChild(opt)
+			}
+		break;
+
+		case 3:
+			document.getElementById("createCaster").style.display = "inline-block"
+			game.conjurationSpells.createSpell.cost = 400
 	}
-	game.spells.createSpell.timesCast++;
+	game.conjurationSpells.createSpell.timesCast++;
 	updateSpells();
+
+	/*var selects = document.getElementsByClassName("targetSelect")
+	for (i in selects) {
+		let select = selects[i]
+		for (y in game.spells) {
+			var opt = document.createElement('option')
+			opt.value = y
+			opt.innerHTML = game.spells[y].name
+			select.appendChild(opt)
+		}
+	}
+
+	var selects = document.getElementsByClassName("targetSelect")
+	for (i in selects) {
+		let select = selects[i]
+		var opt = document.createElement('option')
+		opt.value = y
+		opt.innerHTML = game.spells[y].name
+		select.appendChild(opt)
+		
+	}*/
+
+}
+
+function createCaster() {
+	if (game.currentMana < game.conjurationSpells.createCaster.cost) return false
+	game.currentMana -= game.conjurationSpells.createCaster.cost;
+	game.conjurationSpells.createCaster.cost *= 6
+	game.autoCasters.push(new Autocast())
+	game.conjurationSpells.createCaster.timesCast++;
+	show("Autocasters")
+	document.getElementById("caster"+game.conjurationSpells.createCaster.timesCast).style.display = "inline-block"
+	updateSpells()
 }
 
 function makeCoins() {
@@ -98,6 +170,7 @@ function makeCoins() {
 	if (game.spells.coinSpell.durationLeft !== 0) return false;
 	game.currentMana -= game.spells.coinSpell.cost;
 	game.spells.coinSpell.durationLeft = game.spells.coinSpell.duration;
+	game.spells.coinSpell.timesCast++;
 }
 
 function makeFocus() {
@@ -105,6 +178,7 @@ function makeFocus() {
 	if (game.spells.focusSpell.durationLeft !== 0) return false;
 	game.currentMana -= game.spells.focusSpell.cost;
 	game.spells.focusSpell.durationLeft = game.spells.focusSpell.duration;
+	game.spells.focusSpell.timesCast++;
 }
 
 function coinMult() {
@@ -112,7 +186,10 @@ function coinMult() {
 	if (game.spells.coinMultSpell.durationLeft !== 0) return false;
 	game.currentMana -= game.spells.coinMultSpell.cost;
 	game.spells.coinMultSpell.durationLeft = game.spells.coinMultSpell.duration;
+	game.spells.coinMultSpell.timesCast++;
 }
+
+
 
 function getCPS() {
 	coinMultiplier = 1;
@@ -174,6 +251,63 @@ function manaRegenUpgrade() {
 	updateTooltips();
 }
 
+
+function autoCast(autoCaster) {
+	if (!autoCaster.isOn) return
+
+	let target = autoCaster.target
+	if (target%1 == 0) return
+	if (target.cost > game.currentMana) return
+	if (autoCaster.waitForSpell%1 !== 0) {
+		if (autoCaster.waitForSpell.durationLeft == 0) return
+	}
+	if (autoCaster.waitUntilMaxMana && game.currentMana !== game.maxMana) return
+	if (autoCaster.manaLimit > game.currentMana) return
+	if (target.durationLeft !== 0) return
+
+	target.durationLeft = target.duration
+	game.currentMana -= target.cost
+}
+
+function toggleCaster(x) {
+	game.autoCasters[x-1].isOn = !game.autoCasters[x-1].isOn
+	if (game.autoCasters[x-1].isOn) {
+		changeText(x+"isOn", "Activated")
+		changeClass(x+"isOn", "casterBtnOn")
+	}
+	else {
+		changeText(x+"isOn", "Activate")
+		changeClass(x+"isOn", "casterBtnOff")
+	}
+}
+
+function toggleCasterFullMana(x) {
+	game.autoCasters[x-1].waitUntilMaxMana = !game.autoCasters[x-1].waitUntilMaxMana
+	game.autoCasters[x-1].waitUntilMaxMana ? changeClass(x+"fullmana", "casterBtnOn") : changeClass(x+"fullmana", "casterBtnOff")
+}
+
+function toggleCasterWaitFor(x) {
+	game.autoCasters[x-1].waiting = !game.autoCasters[x-1].waiting
+	if (game.autoCasters[x-1].waiting) {
+		changeText(x+"waitfor", "Casting only when")
+		changeClass(x+"waitfor", "casterBtnOn")
+	}
+	else {
+		changeText(x+"waitfor", "Cast only when")
+		changeClass(x+"waitfor", "casterBtnOff")
+	}
+	
+}
+
+function updateCasters() {
+	for (var i=0; i<game.autoCasters.length; i++) {
+		var target = game.spells[document.getElementById((i+1)+"target").value]
+		var waitingFor = game.spells[document.getElementById((i+1)+"waitforTarget").value]
+		if (target !== undefined ) 	game.autoCasters[i].target = target
+		if (waitingFor !== undefined) game.autoCasters[i].waitForSpell = waitingFor
+	}
+}
+
 function updateInfo() {
 	document.getElementById("manaInfo").innerHTML = "Mana: " + Math.floor(game.currentMana).toFixed(0) + "/" + Math.floor(game.maxMana).toFixed(0);
 	document.getElementById("mps").innerHTML = game.mps.toFixed(1) + " mana per second.";
@@ -187,7 +321,8 @@ function updateInfo() {
 }
 
 function updateSpells() {
-	document.getElementById("createSpellCost").innerHTML = "Cost: " + game.spells.createSpell.cost.toFixed(0) + " Mana";
+	document.getElementById("createSpellCost").innerHTML = "Cost: " + game.conjurationSpells.createSpell.cost.toFixed(0) + " Mana";
+	document.getElementById("createCasterCost").innerHTML = "Cost: " + game.conjurationSpells.createCaster.cost.toFixed(0) + " Mana";
 	document.getElementById("makeCoinsCost").innerHTML = "Cost: " + game.spells.coinSpell.cost.toFixed(0) + " Mana";
   document.getElementById("makeFocusCost").innerHTML = "Cost: " + game.spells.focusSpell.cost.toFixed(0) + " Mana";
 	document.getElementById("coinMultCost").innerHTML = "Cost: " + game.spells.coinMultSpell.cost.toFixed(0) + " Mana";
@@ -198,7 +333,8 @@ function updateSpells() {
 }
 
 function updateButtonLocks() {
-	document.getElementById("createSpellbtn").className = (game.currentMana < game.spells.createSpell.cost) ? "castLocked" : "spellCast";
+	document.getElementById("createSpellbtn").className = (game.currentMana < game.conjurationSpells.createSpell.cost) ? "castLocked" : "spellCast";
+	document.getElementById("createCasterbtn").className = (game.currentMana < game.conjurationSpells.createCaster.cost) ? "castLocked" : "spellCast";
 	document.getElementById("makeCoinsbtn").className = (game.currentMana < game.spells.coinSpell.cost || game.spells.coinSpell.durationLeft !== 0) ? "castLocked" : "spellCast";
 	document.getElementById("makeFocusbtn").className = (game.currentMana < game.spells.focusSpell.cost || game.spells.focusSpell.durationLeft !== 0) ? "castLocked" : "spellCast";
 	document.getElementById("coinMultbtn").className = (game.currentMana < game.spells.coinMultSpell.cost || game.spells.coinMultSpell.durationLeft !== 0) ? "castLocked" : "spellCast";
@@ -255,16 +391,19 @@ setInterval(function() {
 
 	if (game.spells.coinSpell.durationLeft !== 0) {
 		game.spells.coinSpell.durationLeft = Math.max(0, game.spells.coinSpell.durationLeft - delta);
-		if (game.spells.coinMultSpell.durationLeft !== 0) {
-			game.spells.coinMultSpell.durationLeft = Math.max(0, game.spells.coinMultSpell.durationLeft - delta);
-		}
 		game.coins += getCPS() * delta;
+	}
+
+	if (game.spells.coinMultSpell.durationLeft !== 0) {
+		game.spells.coinMultSpell.durationLeft = Math.max(0, game.spells.coinMultSpell.durationLeft - delta);
 	}
 
 	if (game.spells.focusSpell.durationLeft !== 0) {
 		game.spells.focusSpell.durationLeft = Math.max(0, game.spells.focusSpell.durationLeft - delta);
 		game.focus += getFPS() * delta;
 	}
+
+	for (i in game.autoCasters) autoCast(game.autoCasters[i])
 
 	updateInfo();
 	updateButtonLocks();

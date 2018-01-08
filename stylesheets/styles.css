@@ -119,6 +119,46 @@ body {
   vertical-align: top;
 }
 
+.targetSelect {
+  width: 150px;
+  height: 30px;
+  font-size: 14px;
+  background: rgb(50, 121, 214);
+  color: rgb(7, 7, 7);
+  border: none;
+  border-radius: 4px;
+}
+
+.casterBtnOn {
+  width: 150px;
+  height: 30px;
+  background: rgb(79, 137, 212);
+  border:none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 15px;
+  transition-duration: 0.3s;
+}
+
+.casterBtnOn:hover {
+  background: rgb(112, 159, 212);
+}
+
+.casterBtnOff {
+  width: 150px;
+  height: 30px;
+  background: rgb(196, 196, 196);
+  border:none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 15px;
+  transition-duration: 0.3s;
+}
+
+.casterBtnOff:hover {
+  background: rgb(133, 151, 170);
+}
+
 #mana {
     width: 98%;
     background-color: #A3A3A3;

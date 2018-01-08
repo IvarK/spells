@@ -28,7 +28,7 @@
       <div style="text-align:center; font-size: 20px;" id="fps">0 per second.</div>
     </div>
   </div>
-  <div id="Conjuration">
+  <div id="Conjuration" style="width: 50%; float: left">
     <div class="spellType">Conjuration:</div>
     <div class="spellDiv" id="createSpell">
       <br>
@@ -39,18 +39,18 @@
       <br>
       <button id="createSpellbtn" class="spellCast" onclick="createSpell()">Cast</button>
     </div>
-    <div class="spellDiv" id="createSpell">
+    <div class="spellDiv" id="createCaster" style="display: none;">
       <br>
-      <span class="spellName">Cantio Incantamentum</span>
-      <div id="createSpellDescription">Creates a new spell.</div>
+      <span class="spellName">Facio Artifex Liber</span>
+      <div id="createCasterDescription">Creates a new Autocaster.</div>
       <br>
-      <div id="createSpellCost">Cost: 100 Mana</div>
+      <div id="createCasterCost">Cost: 150 Mana</div>
       <br>
-      <button id="createSpellbtn" class="spellCast" onclick="createSpell()">Cast</button>
+      <button id="createCasterbtn" class="spellCast" onclick="createCaster()">Cast</button>
     </div>
   </div>
 
-  <div id="Creation" style="display: none;">
+  <div id="Creation" style="display: none; width: 50%; float: left">
     <div class="spellType">Creation:</div>
 
     <div class="spellDiv" id="makeCoins">
@@ -68,7 +68,7 @@
       <button id="makeCoinsbtn" class="spellCast" onclick="makeCoins()">Cast</button>
     </div>
 
-    <div class="spellDiv" id="makeFocus" style="display: none">
+    <div class="spellDiv" id="makeFocus" style="display: none;">
       <br>
       <span class="spellName">Focus creo</span>
       <div id="makeFocusDescription">Creates 2 focus per second</div>
@@ -83,9 +83,14 @@
       <button id="makeFocusbtn" class="spellCast" onclick="makeFocus()">Cast</button>
     </div>
 
-    <div class="spellDiv" id="coinMult" style="display: none">
+  </div>
+
+  <div id="Enhancion" style="display: none; width: 50%; float: left">
+    <div class="spellType">Enhancion:</div>
+
+    <div class="spellDiv" id="coinMult">
       <br>
-      <span class="spellName">Multiplicationem fab. arg.</span>
+      <span class="spellName">Multiplicationem fab.</span>
       <div id="coinMultDescription">Multiplies your coin production by 2</div>
       <br>
       <button id="coinMultPowerUpg" class="spellUpg" onclick="upgradePower('coinMultSpell')">P</button>
@@ -99,6 +104,73 @@
     </div>
 
   </div>
+
+  <div id="Autocasters" style="display: none; width: 50%; float: left">
+    <div class="spellType">AutoCaster</div>
+
+    <div class="spellDiv" id="caster1">
+      <button class="casterBtnOff" id="1isOn" onclick="toggleCaster(1)">Activate</button>
+      <br>
+
+      <span>Target:</span>
+      <select onchange="updateCasters()" id="1target" class="targetSelect">
+        <option></option>
+      </select>
+      <br>
+      <br>
+      <button class="casterBtnOff" id="1fullmana" onclick="toggleCasterFullMana(1)">Cast when full mana</button>
+      <br>
+      <br>
+      <button class="casterBtnOff" id="1waitfor" onclick="toggleCasterWaitFor(1)">Cast only when</button>
+      <select onchange="updateCasters()" id="1waitforTarget" class="targetSelect">
+        <option></option>
+      </select>
+      <div>is running.</div>
+    </div>
+
+      <br>
+      <div class="spellDiv" id="caster2" style="display:none">
+      <button class="casterBtnOff" id="2isOn" onclick="toggleCaster(2)">Activate</button>
+      <br>
+
+      <span>Target:</span>
+      <select onchange="updateCasters()" id="2target" class="targetSelect">
+        <option></option>
+      </select>
+      <br>
+      <br>
+      <button class="casterBtnOff" id="2fullmana" onclick="toggleCasterFullMana(2)">Cast when full mana</button>
+      <br>
+      <br>
+      <button class="casterBtnOff" id="2waitfor" onclick="toggleCasterWaitFor(2)">Cast only when</button>
+      <select onchange="updateCasters()" id="2waitforTarget" class="targetSelect">
+        <option></option>
+      </select>
+      <div>is running.</div>
+    </div>
+    
+    <div class="spellDiv" id="caster3" style="display:none">
+      <button class="casterBtnOff" id="3isOn" onclick="toggleCaster(3)">Activate</button>
+      <br>
+
+      <span>Target:</span>
+      <select onchange="updateCasters()" id="3target" class="targetSelect">
+        <option></option>
+      </select>
+      <br>
+      <br>
+      <button class="casterBtnOff" id="3fullmana" onclick="toggleCasterFullMana(3)">Cast when full mana</button>
+      <br>
+      <br>
+      <button class="casterBtnOff" id="3waitfor" onclick="toggleCasterWaitFor(3)">Cast only when</button>
+      <select onchange="updateCasters()" id="3waitforTarget" class="targetSelect">
+        <option></option>
+      </select>
+      <div>is running.</div>
+    </div>
+
+  </div>
+
 </body>
 <script src="scripts/game.js" type="text/javascript"></script>
 </html>
