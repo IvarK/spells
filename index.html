@@ -109,6 +109,22 @@
       <div id="coinMultTimesCast">Times cast: 0</div>
     </div>
 
+    <div class="spellDiv" id="focusMult" style="display: none;">
+      <br>
+      <span class="spellName">Multiplicationem creo</span>
+      <div id="focusMultDescription">Multiplies your focus production by 2</div>
+      <br>
+      <button id="focusMultPowerUpg" class="spellUpg" onclick="upgradePower('focusMultSpell')">P</button>
+      <button id="focusMultDurationUpg" class="spellUpg" onclick="upgradeDuration('focusMultSpell')">D</button>
+      <button id="focusMultCostUpg" class="spellUpg" onclick="upgradeCost('focusMultSpell')">C</button>
+      <br>
+      <div id="focusMultDuration"></div>
+      <div id="focusMultCost">Cost: 100 Mana</div>
+      <br>
+      <button id="focusMultbtn" class="spellCast" onclick="focusMult()">Cast</button>
+      <div id="focusMultTimesCast">Times cast: 0</div>
+    </div>
+
   </div>
 
   <div id="Autocasters" style="display: none; width: 50%; float: left" class="noneOnHardReset">
