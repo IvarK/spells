@@ -147,9 +147,54 @@ function onLoad() {
 
 	if (casts >= 3) document.getElementById("createCaster").style.display = "inline-block";
 
+	if (casts >= 5) {
+		document.getElementById("focusMult").style.display = "inline-block";
+		for (i = 0; i < selects.length; i++) {
+			select = selects[i];
+			opt = document.createElement('option');
+			opt.value = "focusMultSpell";
+			opt.innerHTML = game.spells.focusMultSpell.name;
+			select.appendChild(opt);
+		}
+	}
+
 	for (i = 1; i <= game.conjurationSpells.createCaster.timesCast; i++) {
 		document.getElementById("caster" + i).style.display = "inline-block";
+		let caster = game.autoCasters[i-1]
+		if (caster.isOn) {
+			changeClass(i + "isOn", "casterBtnOn")
+			changeText(i+"isOn", "Activated")
+		}
+
+		if (caster.waitUntilMaxMana) {
+			changeClass(i + "fullmana", "casterBtnOn")
+		}
 		show("Autocasters");
+		let target = document.getElementById(i+"target")
+		let count = 1
+		for (property in game.spells) {
+			if (caster.target == property) {
+				target.selectedIndex = count
+				break
+			}
+			count++;
+		}
+		if (caster.waiting) {
+			changeClass(i+"waitfor", "casterBtnOn")
+			changeText(i+"waitfor", "Casting only when")
+		}
+
+		if (caster.waitForSpell%1 !== 0) {
+			let waitfor = document.getElementById(i+"waitforTarget")
+			let count = 1
+			for (property in game.spells) {
+				if (caster.waitForSpell == property) {
+					waitfor.selectedIndex = count
+					break
+				}
+				count++;
+			}
+		}
 	}
 
 }
@@ -352,6 +397,7 @@ function upgradePower(spellName) {
 function upgradeDuration(spellName) {
 	spellToUp = game.spells[spellName];
 	if (game.coins < spellToUp.durationCost) return false;
+	if (spellToUp.duration <= 1) return false
 	game.coins -= spellToUp.durationCost;
 	spellToUp.duration *= creationUpgrades.durationUpgDurationMult;
 	spellToUp.cost *= creationUpgrades.durationUpgCostMult;
@@ -390,11 +436,11 @@ function manaRegenUpgrade() {
 function autoCast(autoCaster) {
 	if (!autoCaster.isOn) return;
 
-	var target = autoCaster.target;
+	var target = game.spells[autoCaster.target];
 	if (target % 1 === 0) return;
 	if (target.cost > game.currentMana) return;
-	if (autoCaster.waitForSpell % 1 !== 0) {
-		if (autoCaster.waitForSpell.durationLeft === 0) return;
+	if (autoCaster.waitForSpell % 1 !== 0 && autoCaster.waiting) {
+		if (game.spells[autoCaster.waitForSpell].durationLeft === 0) return;
 	}
 	if (autoCaster.waitUntilMaxMana && game.currentMana !== game.maxMana) return;
 	if (autoCaster.manaLimit > game.currentMana) return;
@@ -402,6 +448,8 @@ function autoCast(autoCaster) {
 
 	target.durationLeft = target.duration;
 	game.currentMana -= target.cost;
+	target.timesCast++;
+	updateTimesCast()
 }
 
 function toggleCaster(x) {
@@ -435,8 +483,8 @@ function toggleCasterWaitFor(x) {
 
 function updateCasters() {
 	for (var i = 0; i < game.autoCasters.length; i++) {
-		var target = game.spells[document.getElementById((i + 1) + "target").value];
-		var waitingFor = game.spells[document.getElementById((i + 1) + "waitforTarget").value];
+		var target = document.getElementById((i + 1) + "target").value;
+		var waitingFor = document.getElementById((i + 1) + "waitforTarget").value;
 		if (target !== undefined) game.autoCasters[i].target = target;
 		if (waitingFor !== undefined) game.autoCasters[i].waitForSpell = waitingFor;
 	}
@@ -491,7 +539,7 @@ function updateSpells() {
 
 	changeText("makeCoinsDescription", "Creates " + game.spells.coinSpell.power.toFixed(1) + " coins per second");
 	changeText("makeFocusDescription", "Creates " + game.spells.focusSpell.power.toFixed(1) + " focus per second");
-	changeText("coinMultDescription", "Multiplies your coin production by " + (getSpellPower(game.spells.coinMultSpell) * Math.pow(1 + game.spells.coinMultSpell.timesCast / 10, 0.7)).toFixed(1) + " (based on times this spell is cast)");
+	changeText("coinMultDescription", "Multiplies your coin production by " + (getSpellPower(game.spells.coinMultSpell) * Math.pow(1 + game.spells.coinMultSpell.timesCast / 10, 0.4)).toFixed(1) + " (based on times this spell is cast)");
 	// focusMultDescription is in the main loop because it depends on current mana
 }
 
@@ -517,19 +565,19 @@ function updateButtonLocks() {
 	document.getElementById("manaRegenUpg").className = (game.focus < game.regenUpgCost) ? "focusLocked" : "focusUpg";
 
 	spellUpgLock("makeCoinsPowerUpg", game.coins < game.spells.coinSpell.powerCost);
-	spellUpgLock("makeCoinsDurationUpg", game.coins < game.spells.coinSpell.durationCost);
+	spellUpgLock("makeCoinsDurationUpg", game.coins < game.spells.coinSpell.durationCost || game.spells.coinSpell.duration <= 1);
 	spellUpgLock("makeCoinsCostUpg", game.coins < game.spells.coinSpell.costCost);
 
 	spellUpgLock("makeFocusPowerUpg", game.coins < game.spells.focusSpell.powerCost);
-	spellUpgLock("makeFocusDurationUpg", game.coins < game.spells.focusSpell.durationCost);
+	spellUpgLock("makeFocusDurationUpg", game.coins < game.spells.focusSpell.durationCost  || game.spells.focusSpell.duration <= 1);
 	spellUpgLock("makeFocusCostUpg", game.coins < game.spells.focusSpell.costCost);
 
 	spellUpgLock("coinMultPowerUpg", game.coins < game.spells.coinMultSpell.powerCost);
-	spellUpgLock("coinMultDurationUpg", game.coins < game.spells.coinMultSpell.durationCost);
+	spellUpgLock("coinMultDurationUpg", game.coins < game.spells.coinMultSpell.durationCost  || game.spells.coinMultSpell.duration <= 1);
 	spellUpgLock("coinMultCostUpg", game.coins < game.spells.coinMultSpell.costCost);
 
 	spellUpgLock("focusMultPowerUpg", game.coins < game.spells.focusMultSpell.powerCost);
-	spellUpgLock("focusMultDurationUpg", game.coins < game.spells.focusMultSpell.durationCost);
+	spellUpgLock("focusMultDurationUpg", game.coins < game.spells.focusMultSpell.durationCost  || game.spells.focusMultSpell.duration <= 1);
 	spellUpgLock("focusMultCostUpg", game.coins < game.spells.focusMultSpell.costCost);
 }
 
@@ -614,7 +662,7 @@ setInterval(function() {
 	updateButtonLocks();
 	updateDurations();
 	// This depends on current mana, so it has to be updated a lot more often than the rest
-	changeText("focusMultDescription", "Multiplies your focus production by " + (1 + getSpellPower(game.spells.focusMultSpell) * Math.pow(game.currentMana, 0.7) * 0.025).toFixed(1) + " (based on current mana)");
+	changeText("focusMultDescription", "Multiplies your focus production by " + (1 + getSpellPower(game.spells.focusMultSpell) * Math.pow(game.currentMana, 0.4) * 0.025).toFixed(1) + " (based on current mana)");
 
 
 	game.lastUpdate = thisUpdate;
@@ -625,3 +673,4 @@ setInterval(save, 10000);
 load();
 updateSpells();
 updateTooltips();
+updateTimesCast()
