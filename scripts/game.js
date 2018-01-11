@@ -134,7 +134,7 @@ function onLoad() {
 		}
 	}
 
-	if (casts >= 3) {
+	if (casts >= 4) {
 		document.getElementById("Enhancion").style.display = "block";
 		for (i = 0; i < selects.length; i++) {
 			select = selects[i];
@@ -145,9 +145,9 @@ function onLoad() {
 		}
 	}
 
-	if (casts >= 4) document.getElementById("createCaster").style.display = "inline-block";
+	if (casts >= 3) document.getElementById("createCaster").style.display = "inline-block";
 
-	for (i = 0; i < game.conjurationSpells.createCaster.timesCast; i++) {
+	for (i = 1; i <= game.conjurationSpells.createCaster.timesCast; i++) {
 		document.getElementById("caster" + i).style.display = "inline-block";
 		show("Autocasters");
 	}
@@ -262,7 +262,7 @@ function createSpell() {
 function createCaster() {
 	if (game.currentMana < game.conjurationSpells.createCaster.cost) return false;
 	game.currentMana -= game.conjurationSpells.createCaster.cost;
-	game.conjurationSpells.createCaster.cost *= 4;
+	game.conjurationSpells.createCaster.cost *= 3;
 	game.autoCasters.push(new Autocast());
 	game.conjurationSpells.createCaster.timesCast++;
 	show("Autocasters");
@@ -491,7 +491,7 @@ function updateSpells() {
 
 	changeText("makeCoinsDescription", "Creates " + game.spells.coinSpell.power.toFixed(1) + " coins per second");
 	changeText("makeFocusDescription", "Creates " + game.spells.focusSpell.power.toFixed(1) + " focus per second");
-	changeText("coinMultDescription", "Multiplies your coin production by " + (getSpellPower(game.spells.coinMultSpell) * Math.pow(1 + game.spells.coinMultSpell.timesCast / 10, 0.7)).toFixed(1));
+	changeText("coinMultDescription", "Multiplies your coin production by " + (getSpellPower(game.spells.coinMultSpell) * Math.pow(1 + game.spells.coinMultSpell.timesCast / 10, 0.7)).toFixed(1)) + " (based on times this spell is cast)";
 	// focusMultDescription is in the main loop because it depends on current mana
 }
 
@@ -614,7 +614,7 @@ setInterval(function() {
 	updateButtonLocks();
 	updateDurations();
 	// This depends on current mana, so it has to be updated a lot more often than the rest
-	changeText("focusMultDescription", "Multiplies your focus production by " + (1 + getSpellPower(game.spells.focusMultSpell) * Math.pow(game.currentMana, 0.7) * 0.025).toFixed(1));
+	changeText("focusMultDescription", "Multiplies your focus production by " + (1 + getSpellPower(game.spells.focusMultSpell) * Math.pow(game.currentMana, 0.7) * 0.025).toFixed(1)) + " (based on current mana)";
 
 
 	game.lastUpdate = thisUpdate;
