@@ -67,6 +67,7 @@ game = {
 		coinSpell: new Creation("Fabricatio argentaria", 30, 30, 5, 100, 150, 200),
 		focusSpell: new Creation("Focus creo", 50, 20, 2, 300, 500, 700),
 		coinMultSpell: new Creation("Multiplicationem fab.", 70, 10, 2, 700, 1000, 1300),
+		focusMultSpell: new Creation("Multiplicationem creo", 80, 10, 2, 800, 1200, 1600)
 	},
 	lastSpell: 0,
 	nextBoost: "",
@@ -77,7 +78,7 @@ game.lastSpell = game.spells.coinSpell;
 
 function get_save(name) {
 	if (localStorage.getItem("SpellMasterSave") !== null) {
-			return JSON.parse(atob(localStorage.getItem(name)));
+		return JSON.parse(atob(localStorage.getItem(name)));
 	}
 }
 
@@ -89,6 +90,7 @@ function load() {
 	var save = JSON.parse(atob(localStorage.getItem("SpellMasterSave")));
 	if (!save) return;
 	game = save;
+	if (game.spells.focusMultSpell === undefined) game.spells.focusMultSpell = new Creation("Multiplicationem creo", 80, 10, 2, 800, 1200, 1600);
 	onLoad();
 }
 
@@ -135,7 +137,7 @@ function onLoad() {
 
 	if (casts >= 4) document.getElementById("createCaster").style.display = "inline-block";
 
-	for (i = 0; i<game.conjurationSpells.createCaster.timesCast; i++) {
+	for (i = 0; i < game.conjurationSpells.createCaster.timesCast; i++) {
 		document.getElementById("caster" + i).style.display = "inline-block";
 		show("Autocasters");
 	}
@@ -206,7 +208,19 @@ function createSpell() {
 
 		case 3:
 			document.getElementById("createCaster").style.display = "inline-block";
-			game.conjurationSpells.createSpell.cost = 99999999;
+			game.conjurationSpells.createSpell.cost = 300;
+			break;
+
+		case 4:
+			document.getElementById("focusMult").style.display = "inline-block";
+			game.conjurationSpells.createSpell.cost = 9999999;
+			for (i = 0; i < selects.length; i++) {
+				select = selects[i];
+				opt = document.createElement('option');
+				opt.value = "focusMultSpell";
+				opt.innerHTML = game.spells.focusMultSpell.name;
+				select.appendChild(opt);
+			}
 	}
 	game.conjurationSpells.createSpell.timesCast++;
 	updateSpells();
@@ -273,6 +287,17 @@ function coinMult() {
 	game.spells.coinMultSpell.timesCast++;
 	game.lastSpell = game.spells.coinMultSpell;
 	updateTimesCast();
+	updateSpells();
+}
+
+function focusMult() {
+	if (game.currentMana < game.spells.focusMultSpell.cost) return false;
+	if (game.spells.focusMultSpell.durationLeft !== 0) return false;
+	game.currentMana -= game.spells.focusMultSpell.cost;
+	game.spells.focusMultSpell.durationLeft = game.spells.focusMultSpell.duration;
+	game.spells.focusMultSpell.timesCast++;
+	game.lastSpell = game.spells.focusMultSpell;
+	updateTimesCast();
 }
 
 
@@ -280,20 +305,24 @@ function coinMult() {
 function getCPS() {
 	coinMultiplier = 1;
 	if (game.spells.coinMultSpell.durationLeft !== 0) {
-		coinMultiplier = getSpellPower(game.spells.coinMultSpell);
+		coinMultiplier = getSpellPower(game.spells.coinMultSpell) * Math.pow(1 + game.spells.coinMultSpell.timesCast / 10, 0.7);
 	}
 	return getSpellPower(game.spells.coinSpell) * coinMultiplier;
 }
 
 function getFPS() {
-	return getSpellPower(game.spells.focusSpell);
+	focusMultiplier = 1;
+	if (game.spells.focusMultSpell.durationLeft !== 0) {
+		focusMultiplier = 1 + getSpellPower(game.spells.focusMultSpell) * Math.pow(game.currentMana, 0.7) * 0.025;
+	}
+	return getSpellPower(game.spells.focusSpell) * focusMultiplier;
 }
 
 
 function getSpellPower(spell) {
 	var ret = spell.power;
 	for (var i = 0; i < spell.powerBoosts.length; i++) {
-			 ret *= eval(spell.powerBoosts[i]);
+		ret *= eval(spell.powerBoosts[i]);
 	}
 	return ret;
 }
@@ -433,6 +462,7 @@ function hardReset() {
 				coinSpell: new Creation("Fabricatio argentaria", 30, 30, 5, 100, 150, 200),
 				focusSpell: new Creation("Focus creo", 50, 20, 2, 300, 500, 700),
 				coinMultSpell: new Creation("Multiplicationem fab.", 70, 10, 2, 700, 1000, 1300),
+				focusMultSpell: new Creation("Multiplicationem creo", 80, 10, 2, 800, 1200, 1600)
 			},
 			autoCasters: [],
 			lastUpdate: new Date().getTime()
@@ -467,10 +497,12 @@ function updateSpells() {
 	changeText("makeCoinsCost", "Cost: " + game.spells.coinSpell.cost.toFixed(0) + " Mana");
 	changeText("makeFocusCost", "Cost: " + game.spells.focusSpell.cost.toFixed(0) + " Mana");
 	changeText("coinMultCost", "Cost: " + game.spells.coinMultSpell.cost.toFixed(0) + " Mana");
+	changeText("focusMultCost", "Cost: " + game.spells.focusMultSpell.cost.toFixed(0) + " Mana");
 
 	changeText("makeCoinsDescription", "Creates " + game.spells.coinSpell.power.toFixed(1) + " coins per second");
-	changeText("makeFocusDescription", "Creates " + getFPS().toFixed(1) + " focus per second");
-	changeText("coinMultDescription", "Multiplies your coin production by " + game.spells.coinMultSpell.power.toFixed(1));
+	changeText("makeFocusDescription", "Creates " + game.spells.focusSpell.power.toFixed(1) + " focus per second");
+	changeText("coinMultDescription", "Multiplies your coin production by " + (getSpellPower(game.spells.coinMultSpell) * Math.pow(1 + game.spells.coinMultSpell.timesCast / 10, 0.7)).toFixed(1));
+	// focusMultDescription is in the main loop because it depends on current mana
 }
 
 // Locks spell by the button's id if condition is true
@@ -489,6 +521,7 @@ function updateButtonLocks() {
 	spellLock("makeCoinsbtn", game.currentMana < game.spells.coinSpell.cost || game.spells.coinSpell.durationLeft !== 0);
 	spellLock("makeFocusbtn", game.currentMana < game.spells.focusSpell.cost || game.spells.focusSpell.durationLeft !== 0);
 	spellLock("coinMultbtn", game.currentMana < game.spells.coinMultSpell.cost || game.spells.coinMultSpell.durationLeft !== 0);
+	spellLock("focusMultbtn", game.currentMana < game.spells.focusMultSpell.cost || game.spells.focusMultSpell.durationLeft !== 0);
 
 	document.getElementById("manaCapUpg").className = (game.focus < game.capUpgCost) ? "focusLocked" : "focusUpg";
 	document.getElementById("manaRegenUpg").className = (game.focus < game.regenUpgCost) ? "focusLocked" : "focusUpg";
@@ -504,6 +537,10 @@ function updateButtonLocks() {
 	spellUpgLock("coinMultPowerUpg", game.coins < game.spells.coinMultSpell.powerCost);
 	spellUpgLock("coinMultDurationUpg", game.coins < game.spells.coinMultSpell.durationCost);
 	spellUpgLock("coinMultCostUpg", game.coins < game.spells.coinMultSpell.costCost);
+
+	spellUpgLock("focusMultPowerUpg", game.coins < game.spells.focusMultSpell.powerCost);
+	spellUpgLock("focusMultDurationUpg", game.coins < game.spells.focusMultSpell.durationCost);
+	spellUpgLock("focusMultCostUpg", game.coins < game.spells.focusMultSpell.costCost);
 }
 
 function durationTextSet(id, spellName) {
@@ -516,6 +553,7 @@ function updateDurations() {
 	durationTextSet("makeCoinsDuration", "coinSpell");
 	durationTextSet("makeFocusDuration", "focusSpell");
 	durationTextSet("coinMultDuration", "coinMultSpell");
+	durationTextSet("focusMultDuration", "focusMultSpell");
 }
 
 // idPrefix is the beginning of the buttons' ids (i.e. "makeCoins", "coinMult", etc.)
@@ -534,6 +572,7 @@ function updateTooltips() {
 	spellUpgTooltips("makeCoins", creationUpgrades, "coinSpell");
 	spellUpgTooltips("makeFocus", creationUpgrades, "focusSpell");
 	spellUpgTooltips("coinMult", creationUpgrades, "coinMultSpell");
+	spellUpgTooltips("focusMult", creationUpgrades, "focusMultSpell");
 
 	document.getElementById("manaCapUpg").setAttribute('ach-tooltip', "Mana cap -> " + (manaUpgrades.capUpgMult * game.maxMana).toFixed(0) + "\nCost: " + game.capUpgCost + " focus");
 	document.getElementById("manaRegenUpg").setAttribute('ach-tooltip', "Mana regen -> " + (manaUpgrades.regenUpgMult * game.mps).toFixed(1) + "/s\nCost: " + game.regenUpgCost + " focus");
@@ -543,10 +582,11 @@ function timesCastTextSet(id, spellName) {
 	changeText(id, "Times cast: " + game.spells[spellName].timesCast);
 }
 
-function updateTimesCast(){
+function updateTimesCast() {
 	timesCastTextSet("makeCoinsTimesCast", "coinSpell");
 	timesCastTextSet("makeFocusTimesCast", "focusSpell");
-	timesCastTextSet("coinMultTimesCast", "coinMultSpell"); //Add this to spell casts
+	timesCastTextSet("coinMultTimesCast", "coinMultSpell");
+	timesCastTextSet("focusMultTimesCast", "focusMultSpell");
 }
 
 
@@ -571,13 +611,20 @@ setInterval(function() {
 		game.focus += getFPS() * delta;
 	}
 
-	for (var i=0;i<game.spells.length;i++) if (game.spells[i].durationLeft === 0) game.spells[i].boosts = [];
+	if (game.spells.focusMultSpell.durationLeft !== 0) {
+		game.spells.focusMultSpell.durationLeft = Math.max(0, game.spells.focusMultSpell.durationLeft - delta);
+	}
+
+	for (var i = 0; i < game.spells.length; i++)
+		if (game.spells[i].durationLeft === 0) game.spells[i].boosts = [];
 
 	for (i in game.autoCasters) autoCast(game.autoCasters[i]);
 
 	updateInfo();
 	updateButtonLocks();
 	updateDurations();
+	// This depends on current mana, so it has to be updated a lot more often than the rest
+	changeText("focusMultDescription", "Multiplies your focus production by " + (1 + getSpellPower(game.spells.focusMultSpell) * Math.pow(game.currentMana, 0.7) * 0.025).toFixed(1));
 
 
 	game.lastUpdate = thisUpdate;
