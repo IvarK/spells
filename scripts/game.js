@@ -21,12 +21,11 @@ var Creation = function Creation(name, cost, duration, power,
 	this.powerBoosts = [];
 };
 
-var Instant = function Instant(name, power, cost, powerCost, costCost) {
+var Instant = function Instant(name, power, cost, powerCost) {
 	this.name = name
 	this.power = power
 	this.cost = cost
 	this.powerCost = powerCost;
-	this.costCost = costCost;
 	this.timesCast = 0
 	this.powerBoosts = []
 }
@@ -76,7 +75,8 @@ game = {
 		coinSpell: new Creation("Fabricatio argentaria", 30, 30, 5, 100, 150, 200),
 		focusSpell: new Creation("Focus creo", 50, 20, 2, 300, 500, 700),
 		coinMultSpell: new Creation("Multiplicationem fab.", 70, 10, 2, 700, 1000, 1300),
-		focusMultSpell: new Creation("Multiplicationem creo", 80, 10, 2, 800, 1200, 1600)
+		focusMultSpell: new Creation("Multiplicationem creo", 80, 10, 2, 800, 1200, 1600),
+		skipTime: new Instant("Aevum Praetervehor", 5, 15, 1000, 2000)
 	},
 	lastSpell: 0,
 	nextBoost: "",
@@ -189,9 +189,10 @@ function createSpell() {
 				select.appendChild(opt);
 			}
 			break;
+
 		case 1:
 			document.getElementById("makeFocus").style.display = "inline-block";
-			game.conjurationSpells.createSpell.cost = 150;
+			game.conjurationSpells.createSpell.cost = 120;
 			document.getElementById("focusInfoDiv").style.visibility = "visible";
 			document.getElementById("focusShop").style.display = "block";
 			document.getElementById("focusShop").style.visibility = "visible";
@@ -205,6 +206,11 @@ function createSpell() {
 			break;
 
 		case 2:
+			document.getElementById("createCaster").style.display = "inline-block";
+			game.conjurationSpells.createSpell.cost = 150;
+			break;
+
+		case 3:
 			document.getElementById("Enhancion").style.display = "block";
 			game.conjurationSpells.createSpell.cost = 200;
 			for (i = 0; i < selects.length; i++) {
@@ -214,11 +220,6 @@ function createSpell() {
 				opt.innerHTML = game.spells.coinMultSpell.name;
 				select.appendChild(opt);
 			}
-			break;
-
-		case 3:
-			document.getElementById("createCaster").style.display = "inline-block";
-			game.conjurationSpells.createSpell.cost = 300;
 			break;
 
 		case 4:
