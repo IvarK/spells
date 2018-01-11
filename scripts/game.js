@@ -17,10 +17,19 @@ var Creation = function Creation(name, cost, duration, power,
 	this.costCost = costCost;
 	this.description = "";
 	this.durationLeft = 0;
-	this.autocast = 0;
 	this.timesCast = 0;
 	this.powerBoosts = [];
 };
+
+var Instant = function Instant(name, power, cost, powerCost, costCost) {
+	this.name = name
+	this.power = power
+	this.cost = cost
+	this.powerCost = powerCost;
+	this.costCost = costCost;
+	this.timesCast = 0
+	this.powerBoosts = []
+}
 
 
 var Autocast = function Autocast() {
@@ -38,15 +47,15 @@ var creationUpgrades = {
 	durationUpgDurationMult: 1.3,
 	durationUpgCostMult: 1.15,
 	costUpgCostMult: 0.9,
-	upgradesScaling: 1.3,
-	costUpgScaling: 1.5
+	upgradesScaling: 1.5,
+	costUpgScaling: 2
 };
 
 var manaUpgrades = {
 	capUpgMult: 1.235,
 	capUpgCostMult: 2,
-	regenUpgMult: 1.1,
-	regenUpgCostMult: 5
+	regenUpgMult: 1.23,
+	regenUpgCostMult: 2
 };
 
 
@@ -55,7 +64,7 @@ game = {
 	focus: 0,
 	maxMana: 100,
 	currentMana: 100,
-	mps: 5,
+	mps: 2,
 	//Arbitrary numbers for now, of course
 	capUpgCost: 75,
 	regenUpgCost: 100,
@@ -305,7 +314,7 @@ function focusMult() {
 function getCPS() {
 	coinMultiplier = 1;
 	if (game.spells.coinMultSpell.durationLeft !== 0) {
-		coinMultiplier = getSpellPower(game.spells.coinMultSpell) * Math.pow(1 + game.spells.coinMultSpell.timesCast / 10, 0.7);
+		coinMultiplier = getSpellPower(game.spells.coinMultSpell) * Math.pow(1 + game.spells.coinMultSpell.timesCast / 10, 0.4);
 	}
 	return getSpellPower(game.spells.coinSpell) * coinMultiplier;
 }
@@ -313,7 +322,7 @@ function getCPS() {
 function getFPS() {
 	focusMultiplier = 1;
 	if (game.spells.focusMultSpell.durationLeft !== 0) {
-		focusMultiplier = 1 + getSpellPower(game.spells.focusMultSpell) * Math.pow(game.currentMana, 0.7) * 0.025;
+		focusMultiplier = 1 + getSpellPower(game.spells.focusMultSpell) * Math.pow(game.currentMana, 0.4) * 0.025;
 	}
 	return getSpellPower(game.spells.focusSpell) * focusMultiplier;
 }
