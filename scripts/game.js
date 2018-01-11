@@ -491,7 +491,7 @@ function updateSpells() {
 
 	changeText("makeCoinsDescription", "Creates " + game.spells.coinSpell.power.toFixed(1) + " coins per second");
 	changeText("makeFocusDescription", "Creates " + game.spells.focusSpell.power.toFixed(1) + " focus per second");
-	changeText("coinMultDescription", "Multiplies your coin production by " + (getSpellPower(game.spells.coinMultSpell) * Math.pow(1 + game.spells.coinMultSpell.timesCast / 10, 0.7)).toFixed(1)) + " (based on times this spell is cast)";
+	changeText("coinMultDescription", "Multiplies your coin production by " + (getSpellPower(game.spells.coinMultSpell) * Math.pow(1 + game.spells.coinMultSpell.timesCast / 10, 0.7)).toFixed(1) + " (based on times this spell is cast)");
 	// focusMultDescription is in the main loop because it depends on current mana
 }
 
@@ -614,7 +614,7 @@ setInterval(function() {
 	updateButtonLocks();
 	updateDurations();
 	// This depends on current mana, so it has to be updated a lot more often than the rest
-	changeText("focusMultDescription", "Multiplies your focus production by " + (1 + getSpellPower(game.spells.focusMultSpell) * Math.pow(game.currentMana, 0.7) * 0.025).toFixed(1)) + " (based on current mana)";
+	changeText("focusMultDescription", "Multiplies your focus production by " + (1 + getSpellPower(game.spells.focusMultSpell) * Math.pow(game.currentMana, 0.7) * 0.025).toFixed(1) + " (based on current mana)");
 
 
 	game.lastUpdate = thisUpdate;
