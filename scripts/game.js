@@ -22,12 +22,12 @@ var Creation = function Creation(name, cost, duration, power,
 };
 
 var Instant = function Instant(name, power, cost, powerCost) {
-	this.name = name
-	this.power = power
-	this.cost = cost
+	this.name = name;
+	this.power = power;
+	this.cost = cost;
 	this.powerCost = powerCost;
-	this.timesCast = 0
-	this.powerBoosts = []
+	this.timesCast = 0;
+	this.powerBoosts = [];
 }
 
 
@@ -163,37 +163,38 @@ function onLoad() {
 
 	for (i = 1; i <= game.conjurationSpells.createCaster.timesCast; i++) {
 		document.getElementById("caster" + i).style.display = "inline-block";
-		let caster = game.autoCasters[i-1]
+		var caster = game.autoCasters[i - 1];
 		if (caster.isOn) {
-			changeClass(i + "isOn", "casterBtnOn")
-			changeText(i+"isOn", "Activated")
+			changeClass(i + "isOn", "casterBtnOn");
+			changeText(i + "isOn", "Activated");
 		}
+		var count;
 
 		if (caster.waitUntilMaxMana) {
-			changeClass(i + "fullmana", "casterBtnOn")
+			changeClass(i + "fullmana", "casterBtnOn");
 		}
 		show("Autocasters");
-		let target = document.getElementById(i+"target")
-		let count = 1
-		for (property in game.spells) {
+		var target = document.getElementById(i + "target");
+		count = 1;
+		for (var property in game.spells) {
 			if (caster.target == property) {
-				target.selectedIndex = count
-				break
+				target.selectedIndex = count;
+				break;
 			}
 			count++;
 		}
 		if (caster.waiting) {
-			changeClass(i+"waitfor", "casterBtnOn")
-			changeText(i+"waitfor", "Casting only when")
+			changeClass(i + "waitfor", "casterBtnOn");
+			changeText(i + "waitfor", "Casting only when");
 		}
 
-		if (caster.waitForSpell%1 !== 0) {
-			let waitfor = document.getElementById(i+"waitforTarget")
-			let count = 1
+		if (caster.waitForSpell % 1 !== 0) {
+			var waitfor = document.getElementById(i + "waitforTarget");
+			count = 1;
 			for (property in game.spells) {
 				if (caster.waitForSpell == property) {
-					waitfor.selectedIndex = count
-					break
+					waitfor.selectedIndex = count;
+					break;
 				}
 				count++;
 			}
@@ -443,7 +444,8 @@ function upgradePower(spellName) {
 function upgradeDuration(spellName) {
 	spellToUp = game.spells[spellName];
 	if (game.coins < spellToUp.durationCost) return false;
-	if (spellToUp.duration <= 1) return false
+	if (spellToUp.duration * creationUpgrades.durationUpgDurationMult <= 1) return false;
+	if (spellToUp.cost * creationUpgrades.durationUpgCostMult > game.maxMana) return false;
 	game.coins -= spellToUp.durationCost;
 	spellToUp.duration *= creationUpgrades.durationUpgDurationMult;
 	spellToUp.cost *= creationUpgrades.durationUpgCostMult;
@@ -495,7 +497,7 @@ function autoCast(autoCaster) {
 	target.durationLeft = target.duration;
 	game.currentMana -= target.cost;
 	target.timesCast++;
-	updateTimesCast()
+	updateTimesCast();
 }
 
 function toggleCaster(x) {
@@ -550,7 +552,7 @@ function showSettings() {
 function hardReset() {
 	if (document.getElementById("hardResetConfirm").checked) {
 		closeToolTip();
-		game = defaultStart
+		game = defaultStart;
 		var toHide = document.getElementsByClassName("hideOnHardReset");
 		for (var i = 0; i < toHide.length; i++) toHide[i].style.visibility = "hidden";
 		var toNone = document.getElementsByClassName("noneOnHardReset");
@@ -623,19 +625,19 @@ function updateButtonLocks() {
 	document.getElementById("manaRegenUpg").className = (game.focus < game.regenUpgCost) ? "focusLocked" : "focusUpg";
 
 	spellUpgLock("makeCoinsPowerUpg", game.coins < game.spells.coinSpell.powerCost);
-	spellUpgLock("makeCoinsDurationUpg", game.coins < game.spells.coinSpell.durationCost || game.spells.coinSpell.duration <= 1);
+	spellUpgLock("makeCoinsDurationUpg", game.coins < game.spells.coinSpell.durationCost || game.spells.coinSpell.duration * creationUpgrades.durationUpgDurationMult <= 1 || game.spells.coinSpell.cost * creationUpgrades.durationUpgCostMult > game.maxMana);
 	spellUpgLock("makeCoinsCostUpg", game.coins < game.spells.coinSpell.costCost);
 
 	spellUpgLock("makeFocusPowerUpg", game.coins < game.spells.focusSpell.powerCost);
-	spellUpgLock("makeFocusDurationUpg", game.coins < game.spells.focusSpell.durationCost  || game.spells.focusSpell.duration <= 1);
+	spellUpgLock("makeFocusDurationUpg", game.coins < game.spells.focusSpell.durationCost || game.spells.focusSpell.duration * creationUpgrades.durationUpgDurationMult <= 1 || game.spells.focusSpell.cost * creationUpgrades.durationUpgCostMult > game.maxMana);
 	spellUpgLock("makeFocusCostUpg", game.coins < game.spells.focusSpell.costCost);
 
 	spellUpgLock("coinMultPowerUpg", game.coins < game.spells.coinMultSpell.powerCost);
-	spellUpgLock("coinMultDurationUpg", game.coins < game.spells.coinMultSpell.durationCost  || game.spells.coinMultSpell.duration <= 1);
+	spellUpgLock("coinMultDurationUpg", game.coins < game.spells.coinMultSpell.durationCost || game.spells.coinMultSpell.duration * creationUpgrades.durationUpgDurationMult <= 1 || game.spells.coinMultSpell.cost * creationUpgrades.durationUpgCostMult > game.maxMana);
 	spellUpgLock("coinMultCostUpg", game.coins < game.spells.coinMultSpell.costCost);
 
 	spellUpgLock("focusMultPowerUpg", game.coins < game.spells.focusMultSpell.powerCost);
-	spellUpgLock("focusMultDurationUpg", game.coins < game.spells.focusMultSpell.durationCost  || game.spells.focusMultSpell.duration <= 1);
+	spellUpgLock("focusMultDurationUpg", game.coins < game.spells.focusMultSpell.durationCost || game.spells.focusMultSpell.duration * creationUpgrades.durationUpgDurationMult <= 1 || game.spells.focusMultSpell.cost * creationUpgrades.durationUpgCostMult > game.maxMana);
 	spellUpgLock("focusMultCostUpg", game.coins < game.spells.focusMultSpell.costCost);
 }
 
