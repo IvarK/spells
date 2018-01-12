@@ -602,7 +602,7 @@ function updateSpells() {
 
 	changeText("makeCoinsDescription", "Creates " + formatValue(game.spells.coinSpell.power) + " coins per second");
 	changeText("makeFocusDescription", "Creates " + formatValue(game.spells.focusSpell.power) + " focus per second");
-	changeText("coinMultDescription", "Multiplies your coin production by " + formatValue(getSpellPower(game.spells.coinMultSpell) * Math.pow(1 + game.spells.coinMultSpell.timesCast / 10, 0.4) + " (based on times this spell is cast)"));
+	changeText("coinMultDescription", "Multiplies your coin production by " + formatValue(getSpellPower(game.spells.coinMultSpell) * Math.pow(1 + game.spells.coinMultSpell.timesCast / 10, 0.4)) + " (based on times this spell is cast)");
 	// focusMultDescription is in the main loop because it depends on current mana
 }
 
