@@ -81,6 +81,9 @@ game = {
 	lastSpell: 0,
 	nextBoost: "",
 	autoCasters: [],
+	options: {
+		notation: "Standard",
+	},
 	lastUpdate: new Date().getTime()
 };
 var defaultStart = JSON.parse(JSON.stringify(game))
@@ -214,6 +217,49 @@ function changeText(elemName, text) {
 
 function changeClass(elemName, className) {
 	document.getElementById(elemName).className = className;
+}
+
+var FormatList = ['', 'K', 'M', 'B', 'T', 'Qd', 'Qt', 'Sx', 'Sp', 'Oc', 'No', 'Dc', 'UDc', 'DDc', 'TDc', 'QdDc', 'QtDc', 'SxDc', 'SpDc', 'ODc', 'NDc', 
+									'Vg', 'UVg', 'DVg', 'TVg', 'QdVg', 'QtVg', 'SxVg', 'SpVg', 'OVg', 'NVg', 'Tg', 'UTg', 'DTg', 'TTg', 'QdTg', 'QtTg', 'SxTg', 'SpTg', 'OTg', 'NTg', 
+									'Qa', 'UQa', 'DQa', 'TQa', 'QdQa', 'QtQa', 'SxQa', 'SpQa', 'OQa', 'NQa', 'Qi', 'UQi', 'DQi', 'TQi', 'QaQi', 'QtQi', 'SxQi', 'SpQi', 'OQi', 'NQi', 
+									'Se', 'USe', 'DSe', 'TSe', 'QaSe', 'QtSe', 'SxSe', 'SpSe', 'OSe', 'NSe', 'St', 'USt', 'DSt', 'TSt', 'QaSt', 'QtSt', 'SxSt', 'SpSt', 'OSt', 'NSt', 
+									'Og', 'UOg', 'DOg', 'TOg', 'QdOg', 'QtOg', 'SxOg', 'SpOg', 'OOg', 'NOg', 'Nn', 'UNn', 'DNn', 'TNn', 'QdNn', 'QtNn', 'SxNn', 'SpNn', 'ONn', 'NNn', 'Ce',];
+
+function formatValue(value) {
+	
+	if (value >= 1000) {
+		var matissa = value / Math.pow(10, Math.floor(Math.log10(value)));
+		var power = Math.floor(Math.log10(value));
+		if (game.options.notation === "Scientific") {
+			matissa = matissa.toFixed(2)
+			if (matissa >= 10) {
+				matissa /= 10;
+				power++;
+			}
+				return (matissa + "e" + power);
+		}
+
+		matissa = (matissa * Math.pow(10, power % 3)).toFixed(2)
+		if (game.options.notation === "Standard") {
+			return matissa + " " + FormatList[(power - (power % 3)) / 3];
+		} else if (game.options.notation === "Engineering") {
+			return (matissa + "ᴇ" + (power - (power % 3)));
+		}
+	} else if (value < 1000) {
+		return (value).toFixed(0);
+	}
+}
+
+function formatTime(time) {
+	if (time >= 31536000) {
+			return (time / 31536000.0).toFixed(2) + " years"
+	} else if (time >= 86400) {
+			return (time / 86400.0).toFixed(2) + " days" 
+	} else if (time >= 3600) {
+			return (time / 3600.0).toFixed(2) + " hours"
+	} else if (time >= 60) {
+			return (time / 60.0).toFixed(2) + " minutes"
+	} else return Math.floor(time % 60) + " seconds"
 }
 
 function createSpell() {
@@ -517,29 +563,41 @@ function hardReset() {
 	}
 }
 
+function changeNotation() {
+	if (game.options === undefined) game.options = {}
+	if (game.options.notation == "Standard") {
+		game.options.notation = "Scientific"
+	} else if (game.options.notation == "Scientific") {
+		game.options.notation = "Engineering"
+	} else {
+		game.options.notation = "Standard"
+	}
+	changeText("notationbtn", "Notation: "+game.options.notation)
+}
+
 function updateInfo() {
-	changeText("manaInfo", "Mana: " + Math.floor(game.currentMana).toFixed(0) + "/" + Math.floor(game.maxMana).toFixed(0));
-	changeText("mps", game.mps.toFixed(1) + " mana per second.");
+	changeText("manaInfo", "Mana: " + formatValue(game.currentMana) + "/" + formatValue(game.maxMana));
+	changeText("mps", formatValue(game.mps) + " mana per second.");
 	document.getElementById("currentMana").style.width = game.currentMana * 100 / game.maxMana + "%";
 
-	changeText("coinInfo", "You have " + Math.floor(game.coins) + " coins.");
-	changeText("cps", (game.spells.coinSpell.durationLeft === 0) ? "0 coins per second." : getCPS().toFixed(1) + " coins per second.");
+	changeText("coinInfo", "You have " + formatValue(game.coins) + " coins.");
+	changeText("cps", (game.spells.coinSpell.durationLeft === 0) ? "0 coins per second." : formatValue(getCPS()) + " coins per second.");
 
-	changeText("focusInfo", "You have " + Math.floor(game.focus) + " focus.");
-	changeText("fps", (game.spells.focusSpell.durationLeft === 0) ? "0 focus per second." : getFPS().toFixed(1) + " focus per second.");
+	changeText("focusInfo", "You have " + formatValue(game.focus) + " focus.");
+	changeText("fps", (game.spells.focusSpell.durationLeft === 0) ? "0 focus per second." : formatValue(getFPS()) + " focus per second.");
 }
 
 function updateSpells() {
-	changeText("createSpellCost", "Cost: " + game.conjurationSpells.createSpell.cost.toFixed(0) + " Mana");
-	changeText("createCasterCost", "Cost: " + game.conjurationSpells.createCaster.cost.toFixed(0) + " Mana");
-	changeText("makeCoinsCost", "Cost: " + game.spells.coinSpell.cost.toFixed(0) + " Mana");
-	changeText("makeFocusCost", "Cost: " + game.spells.focusSpell.cost.toFixed(0) + " Mana");
-	changeText("coinMultCost", "Cost: " + game.spells.coinMultSpell.cost.toFixed(0) + " Mana");
-	changeText("focusMultCost", "Cost: " + game.spells.focusMultSpell.cost.toFixed(0) + " Mana");
+	changeText("createSpellCost", "Cost: " + formatValue(game.conjurationSpells.createSpell.cost) + " Mana");
+	changeText("createCasterCost", "Cost: " + formatValue(game.conjurationSpells.createCaster.cost) + " Mana");
+	changeText("makeCoinsCost", "Cost: " + formatValue(game.spells.coinSpell.cost) + " Mana");
+	changeText("makeFocusCost", "Cost: " + formatValue(game.spells.focusSpell.cost) + " Mana");
+	changeText("coinMultCost", "Cost: " + formatValue(game.spells.coinMultSpell.cost) + " Mana");
+	changeText("focusMultCost", "Cost: " + formatValue(game.spells.focusMultSpell.cost) + " Mana");
 
-	changeText("makeCoinsDescription", "Creates " + game.spells.coinSpell.power.toFixed(1) + " coins per second");
-	changeText("makeFocusDescription", "Creates " + game.spells.focusSpell.power.toFixed(1) + " focus per second");
-	changeText("coinMultDescription", "Multiplies your coin production by " + (getSpellPower(game.spells.coinMultSpell) * Math.pow(1 + game.spells.coinMultSpell.timesCast / 10, 0.4)).toFixed(1) + " (based on times this spell is cast)");
+	changeText("makeCoinsDescription", "Creates " + formatValue(game.spells.coinSpell.power) + " coins per second");
+	changeText("makeFocusDescription", "Creates " + formatValue(game.spells.focusSpell.power) + " focus per second");
+	changeText("coinMultDescription", "Multiplies your coin production by " + formatValue(getSpellPower(game.spells.coinMultSpell) * Math.pow(1 + game.spells.coinMultSpell.timesCast / 10, 0.4) + " (based on times this spell is cast)"));
 	// focusMultDescription is in the main loop because it depends on current mana
 }
 
@@ -583,7 +641,7 @@ function updateButtonLocks() {
 
 function durationTextSet(id, spellName) {
 	spell = game.spells[spellName];
-	str = "Duration: " + ((spell.durationLeft === 0) ? spell.duration.toFixed(1) : spell.durationLeft.toFixed(1)) + " seconds.";
+	str = "Duration: " + ((spell.durationLeft === 0) ? formatTime(spell.duration) : formatTime(spell.durationLeft)) + " seconds.";
 	document.getElementById(id).innerHTML = str;
 }
 
@@ -601,9 +659,9 @@ function updateDurations() {
 function spellUpgTooltips(idPrefix, spellScaling, spellName) {
 	spell = game.spells[spellName];
 	//Power, then Duration, then Cost
-	document.getElementById(idPrefix + "PowerUpg").setAttribute('ach-tooltip', "Power -> " + (spellScaling.powerUpgPowerMult * spell.power).toFixed(1) + "\nDuration -> " + (spellScaling.powerUpgDurationMult * spell.duration).toFixed(1) + "\nCost: " + spell.powerCost.toFixed(0) + " coins");
-	document.getElementById(idPrefix + "DurationUpg").setAttribute('ach-tooltip', "Duration -> " + (spellScaling.durationUpgDurationMult * spell.duration).toFixed(1) + "\nMana cost -> " + (spellScaling.durationUpgCostMult * spell.cost).toFixed(1) + "\nCost: " + spell.durationCost.toFixed(0) + " coins");
-	document.getElementById(idPrefix + "CostUpg").setAttribute('ach-tooltip', "Mana cost -> " + (spellScaling.costUpgCostMult * spell.cost).toFixed(1) + "\nCost: " + spell.costCost.toFixed(0) + " coins");
+	document.getElementById(idPrefix + "PowerUpg").setAttribute('ach-tooltip', "Power -> " + formatTime(spellScaling.powerUpgPowerMult * spell.power) + "\nDuration -> " + formatValue(spellScaling.powerUpgDurationMult * spell.duration) + "\nCost: " + formatValue(spell.powerCost) + " coins");
+	document.getElementById(idPrefix + "DurationUpg").setAttribute('ach-tooltip', "Duration -> " + formatTime(spellScaling.durationUpgDurationMult * spell.duration) + "\nMana cost -> " + formatValue(spellScaling.durationUpgCostMult * spell.cost) + "\nCost: " + formatValue(spell.durationCost) + " coins");
+	document.getElementById(idPrefix + "CostUpg").setAttribute('ach-tooltip', "Mana cost -> " + formatValue(spellScaling.costUpgCostMult * spell.cost) + "\nCost: " + formatValue(spell.costCost) + " coins");
 }
 
 function updateTooltips() {
@@ -612,8 +670,8 @@ function updateTooltips() {
 	spellUpgTooltips("coinMult", creationUpgrades, "coinMultSpell");
 	spellUpgTooltips("focusMult", creationUpgrades, "focusMultSpell");
 
-	document.getElementById("manaCapUpg").setAttribute('ach-tooltip', "Mana cap -> " + (manaUpgrades.capUpgMult * game.maxMana).toFixed(0) + "\nCost: " + game.capUpgCost + " focus");
-	document.getElementById("manaRegenUpg").setAttribute('ach-tooltip', "Mana regen -> " + (manaUpgrades.regenUpgMult * game.mps).toFixed(1) + "/s\nCost: " + game.regenUpgCost + " focus");
+	document.getElementById("manaCapUpg").setAttribute('ach-tooltip', "Mana cap -> " + formatValue(manaUpgrades.capUpgMult * game.maxMana) + "\nCost: " + formatValue(game.capUpgCost) + " focus");
+	document.getElementById("manaRegenUpg").setAttribute('ach-tooltip', "Mana regen -> " + formatValue(manaUpgrades.regenUpgMult * game.mps) + "/s\nCost: " + formatValue(game.regenUpgCost) + " focus");
 }
 
 function timesCastTextSet(id, spellName) {
@@ -662,7 +720,7 @@ setInterval(function() {
 	updateButtonLocks();
 	updateDurations();
 	// This depends on current mana, so it has to be updated a lot more often than the rest
-	changeText("focusMultDescription", "Multiplies your focus production by " + (1 + getSpellPower(game.spells.focusMultSpell) * Math.pow(game.currentMana, 0.4) * 0.025).toFixed(1) + " (based on current mana)");
+	changeText("focusMultDescription", "Multiplies your focus production by " + formatValue(1 + getSpellPower(game.spells.focusMultSpell) * Math.pow(game.currentMana, 0.4) * 0.025) + " (based on current mana)");
 
 
 	game.lastUpdate = thisUpdate;
@@ -673,4 +731,4 @@ setInterval(save, 10000);
 load();
 updateSpells();
 updateTooltips();
-updateTimesCast()
+updateTimesCast();
