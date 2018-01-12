@@ -223,31 +223,31 @@ function changeClass(elemName, className) {
 	document.getElementById(elemName).className = className;
 }
 
-var FormatList = ['', 'K', 'M', 'B', 'T', 'Qd', 'Qt', 'Sx', 'Sp', 'Oc', 'No', 'Dc', 'UDc', 'DDc', 'TDc', 'QdDc', 'QtDc', 'SxDc', 'SpDc', 'ODc', 'NDc', 
-									'Vg', 'UVg', 'DVg', 'TVg', 'QdVg', 'QtVg', 'SxVg', 'SpVg', 'OVg', 'NVg', 'Tg', 'UTg', 'DTg', 'TTg', 'QdTg', 'QtTg', 'SxTg', 'SpTg', 'OTg', 'NTg', 
-									'Qa', 'UQa', 'DQa', 'TQa', 'QdQa', 'QtQa', 'SxQa', 'SpQa', 'OQa', 'NQa', 'Qi', 'UQi', 'DQi', 'TQi', 'QaQi', 'QtQi', 'SxQi', 'SpQi', 'OQi', 'NQi', 
-									'Se', 'USe', 'DSe', 'TSe', 'QaSe', 'QtSe', 'SxSe', 'SpSe', 'OSe', 'NSe', 'St', 'USt', 'DSt', 'TSt', 'QaSt', 'QtSt', 'SxSt', 'SpSt', 'OSt', 'NSt', 
+var FormatList = ['', 'K', 'M', 'B', 'T', 'Qd', 'Qt', 'Sx', 'Sp', 'Oc', 'No', 'Dc', 'UDc', 'DDc', 'TDc', 'QdDc', 'QtDc', 'SxDc', 'SpDc', 'ODc', 'NDc',
+									'Vg', 'UVg', 'DVg', 'TVg', 'QdVg', 'QtVg', 'SxVg', 'SpVg', 'OVg', 'NVg', 'Tg', 'UTg', 'DTg', 'TTg', 'QdTg', 'QtTg', 'SxTg', 'SpTg', 'OTg', 'NTg',
+									'Qa', 'UQa', 'DQa', 'TQa', 'QdQa', 'QtQa', 'SxQa', 'SpQa', 'OQa', 'NQa', 'Qi', 'UQi', 'DQi', 'TQi', 'QaQi', 'QtQi', 'SxQi', 'SpQi', 'OQi', 'NQi',
+									'Se', 'USe', 'DSe', 'TSe', 'QaSe', 'QtSe', 'SxSe', 'SpSe', 'OSe', 'NSe', 'St', 'USt', 'DSt', 'TSt', 'QaSt', 'QtSt', 'SxSt', 'SpSt', 'OSt', 'NSt',
 									'Og', 'UOg', 'DOg', 'TOg', 'QdOg', 'QtOg', 'SxOg', 'SpOg', 'OOg', 'NOg', 'Nn', 'UNn', 'DNn', 'TNn', 'QdNn', 'QtNn', 'SxNn', 'SpNn', 'ONn', 'NNn', 'Ce',];
 
 function formatValue(value) {
-	
+
 	if (value >= 1000) {
-		var matissa = value / Math.pow(10, Math.floor(Math.log10(value)));
+		var mantissa = value / Math.pow(10, Math.floor(Math.log10(value)));
 		var power = Math.floor(Math.log10(value));
 		if (game.options.notation === "Scientific") {
-			matissa = matissa.toFixed(2)
-			if (matissa >= 10) {
-				matissa /= 10;
+			mantissa = mantissa.toFixed(2);
+			if (mantissa >= 10) {
+				mantissa /= 10;
 				power++;
 			}
-				return (matissa + "e" + power);
+				return (mantissa + "e" + power);
 		}
 
-		matissa = (matissa * Math.pow(10, power % 3)).toFixed(2)
+		mantissa = (mantissa * Math.pow(10, power % 3)).toFixed(2);
 		if (game.options.notation === "Standard") {
-			return matissa + " " + FormatList[(power - (power % 3)) / 3];
+			return mantissa + " " + FormatList[(power - (power % 3)) / 3];
 		} else if (game.options.notation === "Engineering") {
-			return (matissa + "ᴇ" + (power - (power % 3)));
+			return (mantissa + "ᴇ" + (power - (power % 3)));
 		}
 	} else if (value < 1000) {
 		return (value).toFixed(0);
@@ -256,14 +256,14 @@ function formatValue(value) {
 
 function formatTime(time) {
 	if (time >= 31536000) {
-			return (time / 31536000.0).toFixed(2) + " years"
+			return (time / 31536000.0).toFixed(2) + " years";
 	} else if (time >= 86400) {
-			return (time / 86400.0).toFixed(2) + " days" 
+			return (time / 86400.0).toFixed(2) + " days";
 	} else if (time >= 3600) {
-			return (time / 3600.0).toFixed(2) + " hours"
+			return (time / 3600.0).toFixed(2) + " hours";
 	} else if (time >= 60) {
-			return (time / 60.0).toFixed(2) + " minutes"
-	} else return Math.floor(time % 60) + " seconds"
+			return (time / 60.0).toFixed(2) + " minutes";
+	} else return Math.floor(time % 60) + " seconds";
 }
 
 function createSpell() {
@@ -569,15 +569,15 @@ function hardReset() {
 }
 
 function changeNotation() {
-	if (game.options === undefined) game.options = {}
+	if (game.options === undefined) game.options = {};
 	if (game.options.notation == "Standard") {
-		game.options.notation = "Scientific"
+		game.options.notation = "Scientific";
 	} else if (game.options.notation == "Scientific") {
-		game.options.notation = "Engineering"
+		game.options.notation = "Engineering";
 	} else {
-		game.options.notation = "Standard"
+		game.options.notation = "Standard";
 	}
-	changeText("notationbtn", "Notation: "+game.options.notation)
+	changeText("notationbtn", "Notation: "+game.options.notation);
 }
 
 function updateInfo() {
@@ -661,19 +661,19 @@ function updateDurations() {
 // spellScaling is the object containing the different scalings (i.e. creationUpgrades)
 // spellName is the name of the spell in game.spells (i.e. "coinSpell", "focusSpell", etc.)
 // Still gotta do coloring in green for good and red for bad
-function spellUpgTooltips(idPrefix, spellScaling, spellName) {
+function spellUpgTooltips(idPrefix, spellName) {
 	spell = game.spells[spellName];
 	//Power, then Duration, then Cost
-	document.getElementById(idPrefix + "PowerUpg").setAttribute('ach-tooltip', "Power -> " + formatTime(spellScaling.powerUpgPowerMult * spell.power) + "\nDuration -> " + formatValue(spellScaling.powerUpgDurationMult * spell.duration) + "\nCost: " + formatValue(spell.powerCost) + " coins");
-	document.getElementById(idPrefix + "DurationUpg").setAttribute('ach-tooltip', "Duration -> " + formatTime(spellScaling.durationUpgDurationMult * spell.duration) + "\nMana cost -> " + formatValue(spellScaling.durationUpgCostMult * spell.cost) + "\nCost: " + formatValue(spell.durationCost) + " coins");
-	document.getElementById(idPrefix + "CostUpg").setAttribute('ach-tooltip', "Mana cost -> " + formatValue(spellScaling.costUpgCostMult * spell.cost) + "\nCost: " + formatValue(spell.costCost) + " coins");
+	document.getElementById(idPrefix + "PowerUpg").setAttribute('ach-tooltip', "Power -> " + formatValue(spell.power + spell.powerPos) + "\nDuration -> " + formatValue(spell.duration - spell.durationNeg) + "\nCost: " + formatValue(spell.powerCost) + " coins");
+	document.getElementById(idPrefix + "DurationUpg").setAttribute('ach-tooltip', "Duration -> " + formatTime(spell.duration + spell.durationPos) + "\nMana cost -> " + formatValue(spell.cost + spell.costNeg) + "\nCost: " + formatValue(spell.durationCost) + " coins");
+	document.getElementById(idPrefix + "CostUpg").setAttribute('ach-tooltip', "Mana cost -> " + formatValue(spell.cost - spell.costPos) + "\nCost: " + formatValue(spell.costCost) + " coins");
 }
 
 function updateTooltips() {
-	spellUpgTooltips("makeCoins", creationUpgrades, "coinSpell");
-	spellUpgTooltips("makeFocus", creationUpgrades, "focusSpell");
-	spellUpgTooltips("coinMult", creationUpgrades, "coinMultSpell");
-	spellUpgTooltips("focusMult", creationUpgrades, "focusMultSpell");
+	spellUpgTooltips("makeCoins", "coinSpell");
+	spellUpgTooltips("makeFocus", "focusSpell");
+	spellUpgTooltips("coinMult", "coinMultSpell");
+	spellUpgTooltips("focusMult", "focusMultSpell");
 
 	document.getElementById("manaCapUpg").setAttribute('ach-tooltip', "Mana cap -> " + formatValue(manaUpgrades.capUpgMult * game.maxMana) + "\nCost: " + formatValue(game.capUpgCost) + " focus");
 	document.getElementById("manaRegenUpg").setAttribute('ach-tooltip', "Mana regen -> " + formatValue(manaUpgrades.regenUpgMult * game.mps) + "/s\nCost: " + formatValue(game.regenUpgCost) + " focus");
