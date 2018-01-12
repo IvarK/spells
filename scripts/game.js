@@ -74,10 +74,10 @@ game = {
 	},
 	spells: {
 		//name, cost, dur, pow, powCost, durCost, cC, p+, d-, d+, c-, c+ (+ is the nice part of upgrades, - is bad part), pScale, dScale, cS
-		coinSpell: new Creation("Fabricatio argentaria", 30, 30, 5, 100, 150, 200, 3, 3, 5, 6, 3, 1.2, 1.1, 1.4),
-		focusSpell: new Creation("Focus creo", 50, 20, 2, 300, 500, 700, 1, 2, 3, 10, 5, 1.2, 1.1, 1.4),
-		coinMultSpell: new Creation("Multiplicationem fab.", 70, 10, 2, 700, 1000, 1300, 1, 1, 2, 14, 7, 1.2, 1.1, 1.4),
-		focusMultSpell: new Creation("Multiplicationem creo", 80, 10, 2, 800, 1200, 1600, 1, 1, 2, 16, 8, 1.2, 1.1, 1.4),
+		coinSpell: new Creation("Fabricatio argentaria", 30, 30, 5, 100, 150, 200, 3, 3, 4, 6, 3, 1.2, 1.2, 1.4),
+		focusSpell: new Creation("Focus creo", 50, 20, 2, 300, 500, 700, 1, 2, 3, 10, 5, 1.2, 1.2, 1.4),
+		coinMultSpell: new Creation("Multiplicationem fab.", 70, 10, 2, 700, 1000, 1300, 1, 1, 2, 14, 7, 1.2, 1.2, 1.4),
+		focusMultSpell: new Creation("Multiplicationem creo", 80, 10, 2, 800, 1200, 1600, 1, 1, 2, 16, 8, 1.2, 1.2, 1.4),
 		//name, pow, cost, pCost, p+, pScale
 		skipTime: new Instant("Aevum Praetervehor", 5, 15, 1000, 5, 1.5)
 	},
