@@ -28,7 +28,7 @@ var Instant = function Instant(name, power, cost, powerCost) {
 	this.powerCost = powerCost;
 	this.timesCast = 0;
 	this.powerBoosts = [];
-}
+};
 
 
 var Autocast = function Autocast() {
@@ -83,7 +83,7 @@ game = {
 	autoCasters: [],
 	lastUpdate: new Date().getTime()
 };
-var defaultStart = JSON.parse(JSON.stringify(game))
+var defaultStart = JSON.parse(JSON.stringify(game));
 game.lastSpell = game.spells.coinSpell;
 
 function get_save(name) {
