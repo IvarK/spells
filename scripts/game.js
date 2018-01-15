@@ -250,7 +250,7 @@ function formatValue(value) {
 			return (mantissa + "ᴇ" + (power - (power % 3)));
 		}
 	} else if (value < 1000) {
-		return (value).toFixed(0);
+		return (value).toFixed(1);
 	}
 }
 
@@ -263,7 +263,7 @@ function formatTime(time) {
 			return (time / 3600.0).toFixed(2) + " hours";
 	} else if (time >= 60) {
 			return (time / 60.0).toFixed(2) + " minutes";
-	} else return Math.floor(time % 60) + " seconds";
+	} else return (time % 60).toFixed(1) + " seconds";
 }
 
 function createSpell() {
