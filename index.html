@@ -211,6 +211,25 @@
     </div>
 
   </div>
+
+  <div id="Instants" style="display: none;" class="noneOnHardReset">
+    <div class="spellType">Instants</div>
+
+    <div class="spellDiv" id="timeWarp">
+      <br>
+      <span class="spellName">Aevum Praetervehor</span>
+      <div id="timeWarpDescription">Produces 5 seconds of Coins and Focus</div>
+      <br>
+      <button id="timeWarpUpg" class="spellUpg" onclick="upgradeInstant('coinMultSpell')">U</button>
+      <br>
+      <div id="timeWarpCost">Cost: 100 Mana</div>
+      <br>
+      <button id="timeWarpbtn" class="spellCast" onclick="timeWarp()">Cast</button>
+      <div id="timeWarpTimesCast">Times cast: 0</div>
+    </div>
+
+  </div>
+
   <div class="popup" id="settings">
         <div id="settingsInternal">Settings screen. Yeah, contains settings. Much wow.</div>
         <div><button class="storebtn" style="font-size: 15px; width: 200px;" onclick="changeNotation()" id="notationbtn">Notation: Standard</button></div>

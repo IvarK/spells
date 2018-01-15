@@ -79,7 +79,7 @@ game = {
 		coinMultSpell: new Creation("Multiplicationem fab.", 70, 10, 2, 700, 1000, 1300, 1, 1, 2, 14, 7, 1.2, 1.2, 1.4),
 		focusMultSpell: new Creation("Multiplicationem creo", 80, 10, 2, 800, 1200, 1600, 1, 1, 2, 16, 8, 1.2, 1.2, 1.4),
 		//name, pow, cost, pCost, p+, pScale
-		skipTime: new Instant("Aevum Praetervehor", 5, 15, 1000, 5, 1.5)
+		skipTimeSpell: new Instant("Aevum Praetervehor", 5, 15, 1000, 5, 1.5)
 	},
 	lastSpell: 0,
 	nextBoost: "",
@@ -406,6 +406,16 @@ function focusMult() {
 	updateTimesCast();
 }
 
+function timeWarp() {
+	if (game.currentMana < game.spells.skipTimeSpell.cost) return false;
+	game.currentMana -= game.spells.skipTimeSpell.cost;
+	game.spells.skipTimeSpell.timesCast++;
+	updateTimesCast();
+	timeToWarp = getSpellPower(game.spells.skipTimeSpell);
+	game.coins += getCPS() * timeToWarp;
+	game.focus += getFPS() * timeToWarp;
+}
+
 
 
 function getCPS() {
@@ -481,6 +491,16 @@ function manaRegenUpgrade() {
 	game.mps *= manaUpgrades.regenUpgMult;
 	game.regenUpgCost *= manaUpgrades.regenUpgCostMult;
 	updateTooltips();
+}
+
+function upgradeInstant(spellName) {
+	spellToUp = game.spells[spellName];
+	if (game.coins < spellToUp.powerCost) return false;
+	game.coins -= spellToUp.powerCost;
+	spellToUp.power += spellToUp.powerPlus;
+	spellToUp.powerCost *= spellToUp.powerScale;
+	updateTooltips();
+	updateSpells();
 }
 
 
@@ -604,6 +624,7 @@ function updateSpells() {
 	changeText("makeFocusDescription", "Creates " + formatValue(game.spells.focusSpell.power) + " focus per second");
 	changeText("coinMultDescription", "Multiplies your coin production by " + formatValue(getSpellPower(game.spells.coinMultSpell) * Math.pow(1 + game.spells.coinMultSpell.timesCast / 10, 0.4)) + " (based on times this spell is cast)");
 	// focusMultDescription is in the main loop because it depends on current mana
+	changeText("timeWarpDescription", "Produces " + formatTime(game.spells.skipTimeSpell.power) + " of Coins and Focus");
 }
 
 // Locks spell by the button's id if condition is true
@@ -623,6 +644,7 @@ function updateButtonLocks() {
 	spellLock("makeFocusbtn", game.currentMana < game.spells.focusSpell.cost || game.spells.focusSpell.durationLeft !== 0);
 	spellLock("coinMultbtn", game.currentMana < game.spells.coinMultSpell.cost || game.spells.coinMultSpell.durationLeft !== 0);
 	spellLock("focusMultbtn", game.currentMana < game.spells.focusMultSpell.cost || game.spells.focusMultSpell.durationLeft !== 0);
+	spellLock("timeWarpbtn", game.currentMana < game.spells.skipTimeSpell.cost);
 
 	document.getElementById("manaCapUpg").className = (game.focus < game.capUpgCost) ? "focusLocked" : "focusUpg";
 	document.getElementById("manaRegenUpg").className = (game.focus < game.regenUpgCost) ? "focusLocked" : "focusUpg";
@@ -642,6 +664,8 @@ function updateButtonLocks() {
 	spellUpgLock("focusMultPowerUpg", game.coins < game.spells.focusMultSpell.powerCost || game.spells.focusMultSpell.duration - game.spells.focusMultSpell.durationNeg <= 1);
 	spellUpgLock("focusMultDurationUpg", game.coins < game.spells.focusMultSpell.durationCost || game.spells.focusMultSpell.cost + game.spells.focusMultSpell.costNeg > game.maxMana);
 	spellUpgLock("focusMultCostUpg", game.coins < game.spells.focusMultSpell.costCost);
+
+	spellUpgLock("timeWarpUpg", game.coins < game.spells.skipTimeSpell.powerCost);
 }
 
 function durationTextSet(id, spellName) {
@@ -669,11 +693,17 @@ function spellUpgTooltips(idPrefix, spellName) {
 	document.getElementById(idPrefix + "CostUpg").setAttribute('ach-tooltip', "Mana cost -> " + formatValue(spell.cost - spell.costPos) + "\nCost: " + formatValue(spell.costCost) + " coins");
 }
 
+function instantUpgTooltip(buttonName, spellName) {
+	spell = game.spells[spellName];
+	document.getElementById(buttonName).setAttribute('ach-tooltip', "Power -> " + formatValue(spell.power + spell.powerPlus) + "\nCost: " + formatValue(spell.powerCost) + " coins");
+}
+
 function updateTooltips() {
 	spellUpgTooltips("makeCoins", "coinSpell");
 	spellUpgTooltips("makeFocus", "focusSpell");
 	spellUpgTooltips("coinMult", "coinMultSpell");
 	spellUpgTooltips("focusMult", "focusMultSpell");
+	instantUpgTooltip("timeWarpUpg", "skipTimeSpell");
 
 	document.getElementById("manaCapUpg").setAttribute('ach-tooltip', "Mana cap -> " + formatValue(manaUpgrades.capUpgMult * game.maxMana) + "\nCost: " + formatValue(game.capUpgCost) + " focus");
 	document.getElementById("manaRegenUpg").setAttribute('ach-tooltip', "Mana regen -> " + formatValue(manaUpgrades.regenUpgMult * game.mps) + "/s\nCost: " + formatValue(game.regenUpgCost) + " focus");
